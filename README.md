@@ -2,6 +2,10 @@
 
 This repository hosts the source files for Tarik Filipovic's personal portfolio website.
 
+The site includes Tarik's portrait and a nine-piece graphite gallery. Browser-ready,
+optimized images live in `assets/gallery`; the locally stored source photographs in
+`assets/Images` are intentionally excluded from deployment.
+
 **Live site:** [https://filipovic-tarik.github.io](https://filipovic-tarik.github.io)
 
 ## Local development
