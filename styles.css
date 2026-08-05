@@ -211,12 +211,12 @@ h1 {
 }
 
 .creative-preview {
-  display: grid;
-  grid-template-columns: 0.82fr 1.18fr;
-  gap: clamp(54px, 8vw, 120px);
-  align-items: center;
   padding: 118px 0 132px;
   border-top: 1px solid var(--line);
+}
+
+.creative-preview-copy {
+  max-width: 760px;
 }
 
 .creative-preview h2 {
@@ -231,34 +231,6 @@ h1 {
   color: var(--muted);
   font-size: 1.05rem;
   line-height: 1.7;
-}
-
-.creative-preview-images {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 0.72fr;
-  grid-template-rows: 1fr 0.72fr;
-  height: 570px;
-  gap: 10px;
-  text-decoration: none;
-}
-
-.creative-preview-images img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: saturate(0.72) contrast(1.02);
-  transition: filter 250ms ease;
-}
-
-.creative-preview-images img:first-child {
-  grid-row: 1 / 3;
-}
-
-.creative-preview-images:hover img,
-.creative-preview-images:focus-visible img {
-  filter: saturate(0.92) contrast(1.05);
 }
 
 .art-intro {
@@ -318,15 +290,13 @@ h1 {
 }
 
 .art-gallery {
-  columns: 3 280px;
-  column-gap: 22px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 54px 22px;
 }
 
 .art-card {
-  display: inline-block;
-  width: 100%;
-  margin: 0 0 30px;
-  break-inside: avoid;
+  margin: 0;
 }
 
 .art-card a {
@@ -338,9 +308,20 @@ h1 {
 .art-card img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   filter: saturate(0.72) contrast(1.02);
   transition: transform 300ms ease, filter 300ms ease;
+}
+
+.art-card--landscape a {
+  aspect-ratio: 4 / 3;
+}
+
+.art-card--portrait a {
+  width: 75%;
+  aspect-ratio: 3 / 4;
+  margin-inline: auto;
 }
 
 .art-card a:hover img,
@@ -423,12 +404,7 @@ footer a:focus-visible {
   }
 
   .creative-preview {
-    grid-template-columns: 1fr;
     padding: 84px 0 96px;
-  }
-
-  .creative-preview-images {
-    height: 520px;
   }
 
   .creative-heading {
@@ -470,11 +446,7 @@ footer a:focus-visible {
   }
 
   .art-gallery {
-    columns: 1;
-  }
-
-  .creative-preview-images {
-    height: 390px;
+    grid-template-columns: 1fr;
   }
 
   .art-intro {
