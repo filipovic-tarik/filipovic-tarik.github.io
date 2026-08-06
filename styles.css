@@ -324,6 +324,12 @@ h1 {
   margin-inline: auto;
 }
 
+.art-card--solo {
+  grid-column: 1 / -1;
+  width: calc(50% - 11px);
+  justify-self: center;
+}
+
 .art-card a:hover img,
 .art-card a:focus-visible img {
   transform: scale(1.018);
@@ -447,6 +453,11 @@ footer a:focus-visible {
 
   .art-gallery {
     grid-template-columns: 1fr;
+  }
+
+  .art-card--solo {
+    grid-column: auto;
+    width: 100%;
   }
 
   .art-intro {
