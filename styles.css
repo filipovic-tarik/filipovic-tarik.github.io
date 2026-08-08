@@ -92,7 +92,7 @@ nav a:focus-visible {
 
 .portrait-accent {
   position: absolute;
-  inset: -18px 18px 18px -18px;
+  inset: -18px;
   border: 2px solid var(--accent);
   border-radius: 2px;
 }
@@ -142,7 +142,7 @@ h2 {
 
 h1 {
   max-width: 680px;
-  font-size: clamp(4rem, 8vw, 7.4rem);
+  font-size: clamp(3.8rem, 7.3vw, 6.8rem);
   line-height: 0.93;
 }
 
@@ -150,7 +150,7 @@ h1 {
   max-width: 650px;
   margin: 34px 0 38px;
   color: var(--muted);
-  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  font-size: clamp(1.12rem, 1.75vw, 1.4rem);
   line-height: 1.75;
 }
 
@@ -396,7 +396,7 @@ footer a:focus-visible {
   }
 
   h1 {
-    font-size: clamp(3.8rem, 18vw, 6.3rem);
+    font-size: clamp(3.5rem, 16vw, 5.8rem);
   }
 
   .projects {
