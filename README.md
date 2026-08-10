@@ -8,7 +8,8 @@ optimized images live in `assets/gallery`; the locally stored source photographs
 `assets/Images` are intentionally excluded from deployment.
 
 The selected-work section also features the independent paper *Earth's Trajectory
-Through the Universe*, with a browser-readable copy stored in `assets/projects`.
+Through the Universe*. Its dedicated visualization lives at `trajectory.html`, with
+a browser-readable copy of the original paper stored in `assets/projects`.
 
 **Live site:** [https://filipovic-tarik.github.io](https://filipovic-tarik.github.io)
 
