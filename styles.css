@@ -77,7 +77,7 @@ nav a:focus-visible {
 }
 
 .hero {
-  min-height: calc(100vh - 92px);
+  min-height: 100vh;
   display: grid;
   grid-template-columns: minmax(300px, 0.9fr) minmax(420px, 1.1fr);
   align-items: center;
@@ -304,6 +304,82 @@ h1 {
 .project-space-preview:hover .mini-orbit,
 .project-space-preview:focus-visible .mini-orbit {
   border-color: rgba(223, 107, 66, 0.9);
+}
+
+.projects-antilego {
+  padding-top: 130px;
+}
+
+.antilego-preview {
+  position: relative;
+  min-height: 360px;
+  padding: 28px 24px;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #f4f4f2;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px) 0 76% / 100% 58px,
+    #070908;
+  font-family: "DM Sans", sans-serif;
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+
+.antilego-preview:hover,
+.antilego-preview:focus-visible {
+  border-color: rgba(255, 255, 255, 0.55);
+  transform: translateY(-3px);
+}
+
+.antilego-preview-kicker,
+.antilego-preview-status,
+.antilego-preview-readout {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+.antilego-preview-kicker {
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.antilego-preview-title {
+  display: block;
+  margin-top: 28px;
+  font-family: "Manrope", sans-serif;
+  font-size: clamp(1.4rem, 3.6vw, 3.5rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.antilego-preview-rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin-top: 22px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.antilego-preview-status {
+  margin-top: 92px;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.antilego-preview-status i {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: #55ce8b;
+  box-shadow: 0 0 10px rgba(85, 206, 139, 0.46);
+}
+
+.antilego-preview-readout {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.1em;
 }
 
 .project-type {
