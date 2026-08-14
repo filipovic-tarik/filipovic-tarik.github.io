@@ -17,7 +17,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 a { color: inherit; }
-img { max-width: 100%; }
+img,
+video { max-width: 100%; }
 
 .project-header,
 main,
@@ -140,7 +141,8 @@ h1 {
   line-height: 1.75;
 }
 .dashboard-frame { margin: 0; border: 1px solid var(--line); background: #000; }
-.dashboard-frame img { display: block; width: 100%; height: auto; }
+.dashboard-frame img,
+.dashboard-frame video { display: block; width: 100%; height: auto; }
 .dashboard-frame figcaption {
   padding: 13px 16px;
   border-top: 1px solid var(--line);
