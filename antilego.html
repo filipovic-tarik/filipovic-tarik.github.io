@@ -44,7 +44,7 @@
       </section>
 
       <section class="dashboard-section" aria-labelledby="dashboard-title">
-        <div class="section-heading dashboard-heading">
+        <div class="dashboard-heading">
           <h2 id="dashboard-title">Watch Antilego make a live discovery</h2>
         </div>
         <figure class="dashboard-frame">
@@ -63,10 +63,10 @@
       </section>
 
       <section class="problem-section" aria-labelledby="problem-title">
-        <p class="section-label">02 / The problem</p>
-        <div class="problem-grid">
-          <h2 id="problem-title">A market can look normal while related prices contradict one another.</h2>
-          <div>
+        <div class="section-intro">
+          <p class="section-label">02 / The problem</p>
+          <div class="section-content">
+            <h2 id="problem-title">A market can look normal while related prices contradict one another.</h2>
             <p>
               A single contract price may appear reasonable in isolation. The
               inconsistency becomes visible only when it is compared with contracts
@@ -82,11 +82,13 @@
       </section>
 
       <section class="system-section" id="system" aria-labelledby="system-title">
-        <div class="section-heading section-heading-wide">
+        <div class="section-intro">
           <p class="section-label">03 / The system</p>
-          <h2 id="system-title">From an open market to a reviewed signal</h2>
+          <div class="section-content">
+            <h2 id="system-title">From an open market to a reviewed signal</h2>
+          </div>
         </div>
-        <ol class="workflow">
+        <ol class="workflow section-detail">
           <li>
             <span>01</span>
             <div class="workflow-copy">
@@ -138,8 +140,9 @@
               <h3>Verify</h3>
               <p>
                 Deterministic code applies the approved law to executable prices at each
-                snapshot, updates the live charts, and surfaces a violation when the
-                observed prices break the expected relationship.
+                snapshot, displays live graphs of Polymarket executable prices, and
+                surfaces a violation when the observed prices break the expected
+                relationship.
               </p>
             </div>
           </li>
@@ -147,15 +150,17 @@
       </section>
 
       <section class="laws-section" aria-labelledby="laws-title">
-        <div class="section-heading">
+        <div class="section-intro">
           <p class="section-label">04 / Probability laws</p>
-          <h2 id="laws-title">The model proposes relationships. Code checks the math.</h2>
-          <p>
-            AI is used to organize contracts and select a supported relationship.
-            Every actual consistency decision is then made by deterministic code.
-          </p>
+          <div class="section-content">
+            <h2 id="laws-title">The model proposes relationships. Code checks the math.</h2>
+            <p>
+              AI is used to organize contracts and select a supported relationship.
+              Every actual consistency decision is then made by deterministic code.
+            </p>
+          </div>
         </div>
-        <ul class="laws-list">
+        <ul class="laws-list section-detail">
           <li><span>01</span><div><h3>Deadline nesting</h3><p>An earlier cumulative deadline cannot be more likely than a later one.</p></div></li>
           <li><span>02</span><div><h3>Survival deadlines</h3><p>Continuing through a later date cannot be more likely than continuing through an earlier one.</p></div></li>
           <li><span>03</span><div><h3>Threshold chains</h3><p>A harder ordered threshold cannot be more likely than an easier threshold.</p></div></li>
@@ -167,16 +172,18 @@
       </section>
 
       <section class="execution-section" aria-labelledby="execution-title">
-        <div class="execution-copy">
+        <div class="section-intro">
           <p class="section-label">05 / Executable evidence</p>
-          <h2 id="execution-title">A theoretical discrepancy is not enough.</h2>
-          <p>
-            Antilego reads public order books and evaluates the prices available for
-            an executable share quantity. Empty or insufficient books are excluded
-            instead of being presented as opportunities.
-          </p>
+          <div class="section-content">
+            <h2 id="execution-title">A theoretical discrepancy is not enough.</h2>
+            <p>
+              Antilego reads public order books and evaluates the prices available for
+              an executable share quantity. Empty or insufficient books are excluded
+              instead of being presented as opportunities.
+            </p>
+          </div>
         </div>
-        <div class="execution-list">
+        <div class="execution-list section-detail">
           <div><span>01</span><p>Depth-weighted bid and ask prices</p></div>
           <div><span>02</span><p>Automatic removal of unexecutable families</p></div>
           <div><span>03</span><p>Live charts with violation intervals</p></div>
