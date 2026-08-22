@@ -492,7 +492,9 @@ h1 {
 }
 
 .art-intro h1 {
-  max-width: 960px;
+  max-width: none;
+  font-size: clamp(1.45rem, 6vw, 5.4rem);
+  white-space: nowrap;
 }
 
 .art-intro > p:not(.section-number) {
