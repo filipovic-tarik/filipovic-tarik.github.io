@@ -81,22 +81,27 @@ nav a:focus-visible {
 }
 
 .hero {
+  position: relative;
   min-height: 100vh;
   display: grid;
-  grid-template-columns: minmax(300px, 0.9fr) minmax(420px, 1.1fr);
+  grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.85fr);
   align-items: center;
-  gap: clamp(64px, 8vw, 130px);
+  gap: clamp(56px, 6vw, 96px);
   padding: 72px 0 92px;
 }
 
 .portrait-wrap {
   position: relative;
-  max-width: 460px;
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  max-width: 430px;
+  justify-self: end;
 }
 
 .portrait-accent {
   position: absolute;
-  inset: -18px;
+  inset: -18px -18px 0;
   border: 2px solid var(--accent);
   border-radius: 14px;
   background: var(--accent-soft);
@@ -116,10 +121,12 @@ nav a:focus-visible {
 }
 
 .portrait-caption {
-  position: relative;
+  position: absolute;
+  right: 0;
+  bottom: -18px;
   z-index: 2;
   width: max-content;
-  margin: -18px 0 0 auto;
+  margin: 0;
   padding: 12px 18px;
   color: var(--paper);
   background: var(--ink);
@@ -152,31 +159,48 @@ h1 {
   line-height: 0.93;
 }
 
+.hero-copy {
+  grid-column: 1;
+  grid-row: 1;
+}
+
 .introduction {
-  max-width: 650px;
+  width: max-content;
+  max-width: none;
   margin: 34px 0 38px;
   color: var(--muted);
-  font-size: clamp(1.12rem, 1.75vw, 1.4rem);
+  font-size: clamp(1.02rem, 1.35vw, 1.18rem);
   line-height: 1.75;
 }
 
+.intro-line {
+  display: block;
+  white-space: nowrap;
+}
+
 .projects-link {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 190px);
   display: inline-flex;
   align-items: center;
-  gap: 34px;
+  justify-content: space-between;
+  min-width: 280px;
+  gap: 52px;
   padding: 17px 18px 17px 22px;
   color: var(--paper);
   background: var(--ink);
   font-family: "Manrope", sans-serif;
   font-weight: 700;
   text-decoration: none;
+  transform: translateX(-50%);
   transition: transform 180ms ease, background-color 180ms ease;
 }
 
 .projects-link:hover,
 .projects-link:focus-visible {
   background: var(--accent);
-  transform: translateY(-3px);
+  transform: translate(-50%, -3px);
 }
 
 .arrow {
@@ -653,12 +677,42 @@ footer a:focus-visible {
   }
 
   .portrait-wrap {
+    grid-column: auto;
+    grid-row: auto;
     width: calc(100% - 18px);
     margin-left: 18px;
+    justify-self: auto;
   }
 
   .hero-copy {
+    grid-column: auto;
+    grid-row: auto;
     order: -1;
+  }
+
+  .introduction {
+    width: auto;
+    max-width: 650px;
+  }
+
+  .intro-line {
+    display: inline;
+    white-space: normal;
+  }
+
+  .intro-line::after {
+    content: " ";
+  }
+
+  .projects-link {
+    position: static;
+    min-width: 0;
+    transform: none;
+  }
+
+  .projects-link:hover,
+  .projects-link:focus-visible {
+    transform: translateY(-3px);
   }
 
   h1 {
