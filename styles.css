@@ -97,12 +97,12 @@ nav a:focus-visible {
   width: 100%;
   max-width: 440px;
   justify-self: end;
-  margin-bottom: 54px;
+  margin-bottom: 72px;
 }
 
 .portrait-accent {
   position: absolute;
-  inset: -18px -18px 0;
+  inset: -18px;
   border: 2px solid var(--accent);
   border-radius: 14px 14px 0 14px;
   background: var(--accent-soft);
@@ -112,8 +112,8 @@ nav a:focus-visible {
   position: absolute;
   z-index: 0;
   right: -18px;
-  bottom: -54px;
-  left: 58%;
+  bottom: -72px;
+  left: 48%;
   height: 54px;
   border-right: 2px solid var(--accent);
   border-bottom: 2px solid var(--accent);
@@ -187,8 +187,8 @@ h1 {
   max-width: none;
   margin: 34px 0 38px;
   color: var(--muted);
-  font-size: clamp(1rem, 1.35vw, 1.16rem);
-  line-height: 1.75;
+  font-size: clamp(1.08rem, 1.5vw, 1.35rem);
+  line-height: 1.7;
 }
 
 .intro-line {
