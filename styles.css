@@ -281,12 +281,6 @@ h1 {
   box-shadow: 0 24px 58px rgba(23, 50, 77, 0.13);
 }
 
-.project-card:last-child:nth-child(odd) {
-  grid-column: 1 / -1;
-  width: calc(50% - 12px);
-  justify-self: center;
-}
-
 .project-preview {
   display: block;
   aspect-ratio: 16 / 10;
