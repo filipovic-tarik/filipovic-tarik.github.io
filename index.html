@@ -14,7 +14,8 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=7" />
+    <link rel="stylesheet" href="styles.css?v=8" />
+    <script src="contact.js" defer></script>
   </head>
   <body>
     <main id="top">
@@ -176,6 +177,60 @@
           <img src="assets/gallery/sr71blackbird.jpg" alt="Graphite drawing of an SR-71 Blackbird" />
           <img src="assets/gallery/astonmartindb5.jpg" alt="Graphite drawing of an Aston Martin DB5" />
         </a>
+      </section>
+
+      <section class="contact" id="contact" aria-labelledby="contact-title">
+        <div class="contact-heading">
+          <p class="section-number">03 / Contact</p>
+          <div>
+            <h2 id="contact-title">Get in touch.</h2>
+            <p>
+              If you would like to discuss a project, opportunity, or shared interest,
+              feel free to send me a message.
+            </p>
+          </div>
+        </div>
+
+        <div class="contact-layout">
+          <div class="contact-direct">
+            <p>Prefer to reach me directly?</p>
+            <a href="mailto:tarikfilipovic2027@u.northwestern.edu">
+              tarikfilipovic2027@u.northwestern.edu <span aria-hidden="true">↗</span>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/tarikfilipovic"
+              target="_blank"
+              rel="noreferrer"
+            >LinkedIn <span aria-hidden="true">↗</span></a>
+          </div>
+
+          <form class="contact-form" id="contact-form">
+            <label for="contact-email">Your email</label>
+            <input
+              id="contact-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              required
+            />
+
+            <label for="contact-message">Your message</label>
+            <textarea
+              id="contact-message"
+              name="message"
+              rows="7"
+              placeholder="Write your message here"
+              required
+            ></textarea>
+
+            <button type="submit">
+              <span>Send message</span>
+              <span aria-hidden="true">↗</span>
+            </button>
+            <p class="contact-note">This opens your email application with the message prepared.</p>
+          </form>
+        </div>
       </section>
     </main>
 
