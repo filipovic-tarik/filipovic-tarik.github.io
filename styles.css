@@ -104,23 +104,8 @@ nav a:focus-visible {
   position: absolute;
   inset: -18px;
   border: 2px solid var(--accent);
-  border-radius: 14px 14px 0 14px;
+  border-radius: 14px;
   background: var(--accent-soft);
-}
-
-.portrait-wrap::after {
-  position: absolute;
-  z-index: 0;
-  right: -18px;
-  bottom: -37px;
-  left: 48%;
-  height: 19px;
-  border-right: 2px solid var(--accent);
-  border-bottom: 2px solid var(--accent);
-  border-left: 2px solid var(--accent);
-  border-radius: 0 0 14px 14px;
-  background: var(--accent-soft);
-  content: "";
 }
 
 .portrait {
@@ -138,8 +123,8 @@ nav a:focus-visible {
 
 .portrait-caption {
   position: absolute;
-  right: 0;
-  bottom: -36px;
+  right: -18px;
+  bottom: -18px;
   z-index: 2;
   width: max-content;
   margin: 0;
