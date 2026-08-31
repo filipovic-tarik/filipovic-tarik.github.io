@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A visual parametric model of Earth’s trajectory through nested orbital systems."
+    />
+    <meta name="theme-color" content="#030711" />
+    <title>Earth’s Trajectory Through the Universe | Tarik Filipovic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="trajectory.css?v=20261008-5" />
+    <script src="trajectory.js?v=20261028-1" defer></script>
+  </head>
+  <body>
+    <header class="trajectory-header">
+      <a href="index.html#projects" aria-label="Back to Tarik Filipovic’s projects">← Tarik Filipovic</a>
+      <span>Independent research</span>
+    </header>
+
+    <main>
+      <section class="space-hero" aria-labelledby="trajectory-title">
+        <div class="space-sticky">
+          <canvas id="trajectory-canvas" aria-hidden="true"></canvas>
+          <div class="space-vignette" aria-hidden="true"></div>
+
+          <p class="model-context-note">
+            Visual scaling and transformations have been applied to make each feature - and the
+            behavior of the function - easier to understand. To see the calculated model and the
+            resulting shape of Earth’s trajectory in reality,
+            <a href="assets/projects/earths-trajectory-through-the-universe.pdf#page=21" target="_blank" rel="noreferrer">click here</a>
+            to open page 21 of the paper.
+          </p>
+
+          <div class="trajectory-content">
+            <div class="trajectory-heading">
+              <p class="trajectory-kicker">Parametric study / Orbital mechanics</p>
+              <h1 id="trajectory-title">
+                Earth’s Trajectory<br />Through the Universe
+                <span class="scroll-prompt">(Scroll)</span>
+              </h1>
+            </div>
+
+            <div class="model-details">
+              <div class="equation-panel" aria-label="Parametric trajectory function">
+                <span>Scaled model</span>
+                <code>
+                  c(t) = ((R + s cos(ωt))cos(t) + k sin(ωt)sin(t),<br />
+                  (R + s cos(ωt))sin(t) − k sin(ωt)cos(t),<br />
+                  at + f sin(ωt))
+                </code>
+              </div>
+
+              <div class="parameter-panel">
+                <table>
+                  <caption>Model parameters</caption>
+                  <thead>
+                    <tr><th>Symbol</th><th>Quantity</th><th>Value</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr class="interactive-parameter">
+                      <td>R</td>
+                      <td>Galactic orbit radius</td>
+                      <td>
+                        <button class="parameter-view-trigger radius-focus-trigger" type="button" aria-controls="radius-focus-copy">
+                          2.5 × 10²⁰ m <span>View</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr><td>s</td><td>Ecliptic semi-major axis</td><td>1.49597888 × 10¹¹ m</td></tr>
+                    <tr class="interactive-parameter">
+                      <td>↔</td>
+                      <td>Periapsis / apoapsis</td>
+                      <td>
+                        <button class="parameter-view-trigger apsis-focus-trigger" type="button" aria-controls="apsis-focus-copy">
+                          <span class="apsis-values">1.47098074 / 1.52097701 × 10¹¹ m</span>
+                          <span>View</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr><td>k</td><td>Ecliptic tilt shift</td><td>7.410922 × 10¹⁰ m</td></tr>
+                    <tr class="interactive-parameter">
+                      <td>ω</td>
+                      <td>Earth orbits per galactic revolution</td>
+                      <td>
+                        <button class="parameter-view-trigger orbit-count-trigger" type="button" aria-label="View one Galactic revolution of Earth’s modeled path">
+                          240,000,000 <span>View</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr><td>a</td><td>Reference-frame translation</td><td>Adjustable</td></tr>
+                    <tr><td>f</td><td>Vertical orbital stretch</td><td>1.299273 × 10¹¹ m</td></tr>
+                    <tr class="interactive-parameter">
+                      <td>∠</td>
+                      <td>Sun/Earth orbital-plane angle</td>
+                      <td>
+                        <button class="parameter-view-trigger plane-focus-trigger" type="button" aria-controls="plane-focus-copy">
+                          60.3° <span>View</span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p>(All values based on recent data from NASA.)</p>
+              </div>
+            </div>
+
+            <div class="model-meta">
+              <div class="model-key" aria-label="Visualization legend">
+                <span><i class="path-key"></i> Earth’s modeled path</span>
+                <span><i class="sun-key"></i> Sun</span>
+                <span><i class="earth-key"></i> Earth</span>
+                <span><i class="black-hole-key"></i> Sagittarius A*</span>
+              </div>
+              <p class="scale-note">Orbital frequency and distances are compressed for visible comparison.</p>
+            </div>
+          </div>
+
+          <aside class="plane-focus-copy orbital-plane-copy" id="plane-focus-copy" aria-hidden="true">
+            <p class="plane-focus-kicker">Orbital-plane close-up · 60.3°</p>
+            <h2>The ecliptic and Galactic planes</h2>
+            <p>
+              The amber Galactic plane is the imaginary plane enclosed by the Sun’s orbit around
+              the Milky Way. The blue ecliptic plane is enclosed by Earth’s orbit around the Sun.
+              They intersect at 60.3° - not at the perpendicular 90° angle that might seem intuitive.
+              The model therefore tilts the initially upright Earth-orbit loop by the complementary
+              29.7°.
+            </p>
+            <button class="plane-focus-back orbital-plane-back" type="button">← Back to the full path</button>
+          </aside>
+
+          <aside class="plane-focus-copy radius-focus-copy" id="radius-focus-copy" aria-hidden="true">
+            <p class="plane-focus-kicker">Galactic orbit radius · R</p>
+            <h2>26,000 light-years from the Galactic center</h2>
+            <p>
+              The white radius joins Sagittarius A* at the center of the Milky Way to the Sun’s
+              current position. In the model, this distance is approximately 2.5 × 10²⁰ meters.
+            </p>
+            <button class="plane-focus-back radius-focus-back" type="button">← Back to the full path</button>
+          </aside>
+
+          <aside class="plane-focus-copy apsis-focus-copy" id="apsis-focus-copy" aria-hidden="true">
+            <p class="plane-focus-kicker">Earth’s orbital extremes</p>
+            <h2>Periapsis and apoapsis</h2>
+            <p>
+              Periapsis is Earth’s nearest point to the Sun, at 1.47098074 × 10¹¹ meters.
+              Apoapsis is its farthest point, at 1.52097701 × 10¹¹ meters. The small difference
+              between them gives Earth’s orbit its slight eccentricity.
+            </p>
+            <button class="plane-focus-back apsis-focus-back" type="button">← Back to the full path</button>
+          </aside>
+        </div>
+      </section>
+
+      <footer class="paper-footer">
+        <div class="paper-footer-heading">
+          <p>Original research paper</p>
+          <h2>This project is based on the original 22-page mathematical investigation.</h2>
+        </div>
+        <p class="paper-footer-copy">
+          The paper documents the derivation, calculations, assumptions, model
+          limitations, and GeoGebra experiments behind this visualization.
+        </p>
+        <a href="assets/projects/earths-trajectory-through-the-universe.pdf" target="_blank" rel="noreferrer">
+          Read the original paper <span aria-hidden="true">↗</span>
+        </a>
+      </footer>
+    </main>
+  </body>
+</html>
