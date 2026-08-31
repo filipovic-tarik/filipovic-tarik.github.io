@@ -104,7 +104,7 @@ nav a:focus-visible {
   position: absolute;
   inset: -18px;
   border: 2px solid var(--accent);
-  border-radius: 14px;
+  border-radius: 14px 14px 0 14px;
   background: var(--accent-soft);
 }
 
@@ -121,13 +121,22 @@ nav a:focus-visible {
   filter: saturate(0.84) contrast(1.03);
 }
 
-.portrait-caption {
+.portrait-notch {
   position: absolute;
   right: -18px;
-  bottom: -18px;
+  top: calc(100% + 16px);
   z-index: 2;
+  padding: 0 0 2px 12px;
+  border-right: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 0 14px 14px;
+  background: var(--accent-soft);
+}
+
+.portrait-caption {
   width: max-content;
-  margin: 0;
+  margin: -26px 0 0;
   padding: 12px 18px;
   color: var(--paper);
   background: var(--ink);
@@ -776,7 +785,7 @@ footer a:focus-visible {
   }
 
   .portrait-caption {
-    margin-top: -14px;
+    margin-top: -20px;
     padding: 10px 12px;
     font-size: 0.64rem;
   }
