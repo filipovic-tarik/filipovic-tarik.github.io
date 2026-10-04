@@ -1,6 +1,6 @@
 # Tarik Filipovic — Personal Website
 
-This repository hosts the source files for Tarik Filipovic's personal website.
+This repository hosts the source files for Tarik Filipovic's personal portfolio website.
 
 **Live site:** [https://tarikfilipovic.github.io](https://tarikfilipovic.github.io)
 
