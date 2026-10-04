@@ -2,7 +2,7 @@
 
 This repository hosts the source files for Tarik Filipovic's personal portfolio website.
 
-**Live site:** [https://tarikfilipovic.github.io](https://tarikfilipovic.github.io)
+**Live site:** [https://filipovic-tarik.github.io](https://tarikfilipovic.github.io)
 
 ## Local development
 
