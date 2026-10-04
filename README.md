@@ -2,11 +2,11 @@
 
 This repository hosts the source files for Tarik Filipovic's personal portfolio website.
 
-**Live site:** [https://filipovic-tarik.github.io](https://tarikfilipovic.github.io)
+**Live site:** [https://filipovic-tarik.github.io](https://filipovic-tarik.github.io)
 
 ## Local development
 
-After the site files are added, clone the repository and run a simple local server from its directory:
+Clone the repository and run a simple local server from its directory:
 
 ```bash
 python3 -m http.server 8000
