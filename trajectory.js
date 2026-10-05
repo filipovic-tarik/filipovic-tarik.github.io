@@ -457,14 +457,8 @@ function requestScrollUpdate() {
 
 function setPlaneFocus(active) {
   if (active) {
-    planeEarthStartAngle = Math.atan2(0.34 * Math.sin(orbitTheta), Math.cos(orbitTheta));
     planeEarthTargetAngle = -60.3 * Math.PI / 180;
-    while (planeEarthTargetAngle - planeEarthStartAngle > Math.PI) {
-      planeEarthTargetAngle -= Math.PI * 2;
-    }
-    while (planeEarthTargetAngle - planeEarthStartAngle < -Math.PI) {
-      planeEarthTargetAngle += Math.PI * 2;
-    }
+    planeEarthStartAngle = planeEarthTargetAngle;
     planeViewRotation = Math.PI / 2 - (orbitTheta % (Math.PI * 2));
     while (planeViewRotation > Math.PI) planeViewRotation -= Math.PI * 2;
     while (planeViewRotation < -Math.PI) planeViewRotation += Math.PI * 2;
