@@ -21,6 +21,7 @@ let sceneProgress = 0;
 let orbitTheta = Math.PI * 1.72;
 let planeFocusProgress = 0;
 let planeFocusTarget = 0;
+let planeSceneRotation = 0;
 
 function clamp(value, minimum = 0, maximum = 1) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -223,14 +224,6 @@ function drawPlaneFocus(centerX, centerY, scale, progress) {
   context.textAlign = 'left';
   context.fillText('60.3°', radius * 0.31, -radius * 0.19);
 
-  drawBody({ x: 0, y: 0 }, Math.max(6, radius * 0.038), '#f4b54d', 'rgba(244,181,77,.85)');
-
-  context.save();
-  context.rotate(-planeAngle);
-  const earthX = radius * 0.54;
-  drawBody({ x: earthX, y: 0 }, Math.max(3, radius * 0.021), '#b5dcff', 'rgba(181,220,255,.9)');
-  context.restore();
-
   context.fillStyle = 'rgba(169,206,255,.9)';
   context.font = '600 10px "DM Sans", sans-serif';
   context.textAlign = 'left';
@@ -291,25 +284,46 @@ function render(time) {
   const zoom = 1 + focusEase * 2.8;
   const zoomAnchorX = sun.x + (diagramCenterX - sun.x) * focusEase;
   const zoomAnchorY = sun.y + (diagramCenterY - sun.y) * focusEase;
+  const sceneRotation = planeSceneRotation * focusEase;
+  const earthOffsetX = earth.x - sun.x;
+  const earthOffsetY = earth.y - sun.y;
+  const rotatedEarthOffsetX = earthOffsetX * Math.cos(sceneRotation) - earthOffsetY * Math.sin(sceneRotation);
+  const rotatedEarthOffsetY = earthOffsetX * Math.sin(sceneRotation) + earthOffsetY * Math.cos(sceneRotation);
+  const zoomedEarthX = zoomAnchorX + rotatedEarthOffsetX * zoom;
+  const zoomedEarthY = zoomAnchorY + rotatedEarthOffsetY * zoom;
 
   context.save();
   context.globalAlpha = 1 - focusEase;
   context.translate(zoomAnchorX, zoomAnchorY);
   context.scale(zoom, zoom);
+  context.rotate(sceneRotation);
   context.translate(-sun.x, -sun.y);
   drawPath(centerX, projectionCenterY, scale, theta);
   drawSagittariusA(galacticCenter, scale, time);
   drawLabel(galacticCenter, 'Sagittarius A*', 42, -34);
-
-  drawBody(sun, Math.max(5, scale * 0.008), '#f4b54d', 'rgba(244,181,77,.8)');
-  drawBody(earth, Math.max(2.5, scale * 0.0038), '#b5dcff', 'rgba(181,220,255,.85)');
-  drawLabel(sun, 'Sun', -34, -24);
-  drawLabel(earth, 'Earth', 32, 24);
   context.restore();
 
   if (planeFocusProgress > 0) {
     drawPlaneFocus(diagramCenterX, diagramCenterY, scale, planeFocusProgress);
   }
+
+  const diagramRadius = Math.min(scale * 0.25, 205);
+  const diagramScale = 0.14 + focusEase * 0.86;
+  const diagramPlaneAngle = -60.3 * Math.PI / 180;
+  const targetEarthDistance = diagramRadius * 0.54 * diagramScale;
+  const targetEarthX = diagramCenterX + targetEarthDistance * Math.cos(diagramPlaneAngle);
+  const targetEarthY = diagramCenterY + targetEarthDistance * Math.sin(diagramPlaneAngle);
+  const sharedEarthX = zoomedEarthX + (targetEarthX - zoomedEarthX) * focusEase;
+  const sharedEarthY = zoomedEarthY + (targetEarthY - zoomedEarthY) * focusEase;
+  const sunRadius = Math.max(5, scale * 0.008) + (11 - Math.max(5, scale * 0.008)) * focusEase;
+  const earthRadius = Math.max(2.5, scale * 0.0038) + (5 - Math.max(2.5, scale * 0.0038)) * focusEase;
+
+  const sharedSun = { x: zoomAnchorX, y: zoomAnchorY };
+  const sharedEarth = { x: sharedEarthX, y: sharedEarthY };
+  drawBody(sharedSun, sunRadius, '#f4b54d', 'rgba(244,181,77,.85)');
+  drawBody(sharedEarth, earthRadius, '#b5dcff', 'rgba(181,220,255,.9)');
+  drawLabel(sharedSun, 'Sun', -34, -24);
+  drawLabel(sharedEarth, 'Earth', 32, 24);
 
   if (!reducedMotion) requestAnimationFrame(render);
 }
@@ -346,6 +360,10 @@ function requestScrollUpdate() {
 }
 
 function setPlaneFocus(active) {
+  if (active) {
+    const currentLoopAngle = Math.atan2(0.34 * Math.sin(orbitTheta), Math.cos(orbitTheta));
+    planeSceneRotation = -60.3 * Math.PI / 180 - currentLoopAngle;
+  }
   planeFocusTarget = active ? 1 : 0;
   document.body.classList.toggle('plane-focus-active', active);
   planeFocusCopy.setAttribute('aria-hidden', String(!active));
