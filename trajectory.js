@@ -81,14 +81,16 @@ function drawStars(time) {
   }
 }
 
-function drawPath(centerX, centerY, scale) {
+function drawPath(centerX, centerY, scale, headTheta) {
   const segments = 1300;
+  const orbitSpan = Math.PI * 2;
+  const tailTheta = headTheta - orbitSpan;
   context.lineWidth = Math.max(0.7, scale / 900);
   context.strokeStyle = 'rgba(121, 174, 247, 0.48)';
   context.beginPath();
 
   for (let index = 0; index <= segments; index += 1) {
-    const theta = (index / segments) * Math.PI * 2;
+    const theta = tailTheta + (index / segments) * orbitSpan;
     const phase = theta * 28;
     const point = projectPoint(theta, phase, centerX, centerY, scale);
     if (index === 0) context.moveTo(point.x, point.y);
@@ -100,7 +102,7 @@ function drawPath(centerX, centerY, scale) {
   context.strokeStyle = 'rgba(255, 255, 255, 0.12)';
   context.beginPath();
   for (let index = 0; index <= 260; index += 1) {
-    const theta = (index / 260) * Math.PI * 2;
+    const theta = tailTheta + (index / 260) * orbitSpan;
     const point = projectSun(theta, centerX, centerY, scale);
     if (index === 0) context.moveTo(point.x, point.y);
     else context.lineTo(point.x, point.y);
@@ -178,16 +180,19 @@ function render(time) {
   const scale = Math.min(width, height) * (width < 700 ? 0.92 : 1.15);
   const centerX = width * (width <= 760 ? 0.5 : 0.5 + sceneProgress * 0.23);
   const centerY = height * 0.57;
-  drawPath(centerX, centerY, scale);
+  const elapsed = reducedMotion ? 0 : (time - startTime) * 0.000025;
+  const theta = Math.PI * 1.72 + elapsed;
+  const phase = theta * 28;
+  const headDrift = scale * 0.09 * ((theta - Math.PI) / Math.PI);
+  const projectionCenterY = centerY + headDrift * 0.78;
+
+  drawPath(centerX, projectionCenterY, scale, theta);
   const galacticCenter = { x: centerX, y: centerY };
   drawSagittariusA(galacticCenter, scale, time);
   drawLabel(galacticCenter, 'Sagittarius A*', 42, -34);
 
-  const elapsed = reducedMotion ? 0 : (time - startTime) * 0.000025;
-  const theta = Math.PI * 1.72 + elapsed;
-  const phase = theta * 28;
-  const sun = projectSun(theta, centerX, centerY, scale);
-  const earth = projectPoint(theta, phase, centerX, centerY, scale);
+  const sun = projectSun(theta, centerX, projectionCenterY, scale);
+  const earth = projectPoint(theta, phase, centerX, projectionCenterY, scale);
 
   drawBody(sun, Math.max(5, scale * 0.008), '#f4b54d', 'rgba(244,181,77,.8)');
   drawBody(earth, Math.max(2.5, scale * 0.0038), '#b5dcff', 'rgba(181,220,255,.85)');
