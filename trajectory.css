@@ -278,7 +278,7 @@ h1 {
 body.plane-focus-active .trajectory-heading,
 body.plane-focus-active .model-details,
 body.plane-focus-active .model-meta { opacity: 0 !important; pointer-events: none; }
-body.plane-focus-active .plane-focus-copy {
+body.plane-focus-active.plane-focus-ready .plane-focus-copy {
   opacity: 1;
   pointer-events: auto;
   transform: translate(-50%, 0);
