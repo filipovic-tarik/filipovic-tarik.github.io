@@ -15,8 +15,8 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="trajectory.css?v=20261005-4" />
-    <script src="trajectory.js?v=20261005-5" defer></script>
+    <link rel="stylesheet" href="trajectory.css?v=20261005-6" />
+    <script src="trajectory.js?v=20261005-6" defer></script>
   </head>
   <body>
     <header class="trajectory-header">
@@ -62,6 +62,15 @@
                     <tr><td>ω</td><td>Earth orbits per galactic revolution</td><td>240,000,000</td></tr>
                     <tr><td>a</td><td>Reference-frame translation</td><td>Adjustable</td></tr>
                     <tr><td>f</td><td>Vertical orbital stretch</td><td>1.299273 × 10¹¹ m</td></tr>
+                    <tr class="interactive-parameter">
+                      <td>∠</td>
+                      <td>Sun/Earth orbital-plane angle</td>
+                      <td>
+                        <button class="plane-focus-trigger" type="button" aria-controls="plane-focus-copy">
+                          60.3° <span>View</span>
+                        </button>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
                 <p>(All values based on recent data from NASA.)</p>
@@ -78,6 +87,19 @@
               <p class="scale-note">Orbital frequency and distances are compressed for visible comparison.</p>
             </div>
           </div>
+
+          <aside class="plane-focus-copy" id="plane-focus-copy" aria-hidden="true">
+            <p class="plane-focus-kicker">Orbital-plane close-up · 60.3°</p>
+            <h2>The ecliptic and Galactic planes</h2>
+            <p>
+              The blue Galactic plane is the imaginary plane enclosed by the Sun’s orbit around
+              the Milky Way. The amber ecliptic plane is enclosed by Earth’s orbit around the Sun.
+              They intersect at 60.3°—not at the perpendicular 90° angle that might seem intuitive.
+              The model therefore tilts the initially upright Earth-orbit loop by the complementary
+              29.7°.
+            </p>
+            <button class="plane-focus-back" type="button">← Back to the full path</button>
+          </aside>
         </div>
       </section>
 

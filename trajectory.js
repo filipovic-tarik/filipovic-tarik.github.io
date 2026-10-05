@@ -6,14 +6,21 @@ const trajectoryHeading = document.querySelector('.trajectory-heading');
 const modelDetails = document.querySelector('.model-details');
 const parameterPanel = document.querySelector('.parameter-panel');
 const modelMeta = document.querySelector('.model-meta');
+const planeFocusTrigger = document.querySelector('.plane-focus-trigger');
+const planeFocusBack = document.querySelector('.plane-focus-back');
+const planeFocusCopy = document.querySelector('.plane-focus-copy');
 
 let width = 0;
 let height = 0;
 let pixelRatio = 1;
 let stars = [];
 let startTime = performance.now();
+let lastRenderTime = startTime;
 let scrollFrameRequested = false;
 let sceneProgress = 0;
+let orbitTheta = Math.PI * 1.72;
+let planeFocusProgress = 0;
+let planeFocusTarget = 0;
 
 function clamp(value, minimum = 0, maximum = 1) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -158,6 +165,81 @@ function drawSagittariusA(point, scale, time) {
   drawBody(point, coreRadius, '#02040a', 'rgba(244,181,77,.72)');
 }
 
+function drawOrbitalPlane(radius, rotation, fill, stroke) {
+  context.save();
+  context.rotate(rotation);
+  context.beginPath();
+  context.ellipse(0, 0, radius, radius * 0.31, 0, 0, Math.PI * 2);
+  context.fillStyle = fill;
+  context.fill();
+  context.lineWidth = 1.2;
+  context.strokeStyle = stroke;
+  context.stroke();
+  context.restore();
+}
+
+function drawPlaneFocus(centerX, centerY, scale, progress) {
+  const easedProgress = progress * progress * (3 - 2 * progress);
+  const focusOpacity = clamp((easedProgress - 0.08) / 0.72);
+  const diagramScale = 0.14 + easedProgress * 0.86;
+  const radius = Math.min(scale * 0.25, 205);
+  const planeAngle = 60.3 * Math.PI / 180;
+
+  context.save();
+  context.globalAlpha = focusOpacity;
+  context.translate(centerX, centerY);
+  context.scale(diagramScale, diagramScale);
+
+  drawOrbitalPlane(
+    radius,
+    0,
+    'rgba(121, 174, 247, 0.105)',
+    'rgba(121, 174, 247, 0.72)',
+  );
+  drawOrbitalPlane(
+    radius * 0.72,
+    -planeAngle,
+    'rgba(244, 181, 77, 0.12)',
+    'rgba(244, 181, 77, 0.9)',
+  );
+
+  context.save();
+  context.setLineDash([6, 6]);
+  context.lineWidth = 1;
+  context.strokeStyle = 'rgba(255,255,255,.68)';
+  context.beginPath();
+  context.moveTo(0, 0);
+  context.lineTo(radius * 0.62, 0);
+  context.moveTo(0, 0);
+  context.lineTo(radius * 0.62 * Math.cos(-planeAngle), radius * 0.62 * Math.sin(-planeAngle));
+  context.stroke();
+  context.beginPath();
+  context.arc(0, 0, radius * 0.39, -planeAngle, 0);
+  context.stroke();
+  context.restore();
+
+  context.fillStyle = 'rgba(255,255,255,.88)';
+  context.font = '700 12px "Space Mono", monospace';
+  context.textAlign = 'left';
+  context.fillText('60.3°', radius * 0.31, -radius * 0.19);
+
+  drawBody({ x: 0, y: 0 }, Math.max(6, radius * 0.038), '#f4b54d', 'rgba(244,181,77,.85)');
+
+  context.save();
+  context.rotate(-planeAngle);
+  const earthX = radius * 0.54;
+  drawBody({ x: earthX, y: 0 }, Math.max(3, radius * 0.021), '#b5dcff', 'rgba(181,220,255,.9)');
+  context.restore();
+
+  context.fillStyle = 'rgba(169,206,255,.9)';
+  context.font = '600 10px "DM Sans", sans-serif';
+  context.textAlign = 'left';
+  context.fillText('GALACTIC PLANE · SUN ORBIT', radius * 0.48, radius * 0.2);
+  context.fillStyle = 'rgba(255,208,121,.92)';
+  context.fillText('ECLIPTIC PLANE · EARTH ORBIT', -radius * 0.58, -radius * 0.53);
+  context.restore();
+}
+
 function drawLabel(point, label, offsetX, offsetY) {
   const targetX = point.x + offsetX;
   const targetY = point.y + offsetY;
@@ -177,27 +259,57 @@ function render(time) {
   context.clearRect(0, 0, width, height);
   drawStars(time);
 
+  const frameDuration = Math.min(50, Math.max(0, time - lastRenderTime));
+  lastRenderTime = time;
+  if (reducedMotion) {
+    planeFocusProgress = planeFocusTarget;
+  } else if (planeFocusProgress !== planeFocusTarget) {
+    const direction = Math.sign(planeFocusTarget - planeFocusProgress);
+    planeFocusProgress = clamp(planeFocusProgress + direction * frameDuration / 850);
+    if (Math.abs(planeFocusTarget - planeFocusProgress) < 0.002) {
+      planeFocusProgress = planeFocusTarget;
+    }
+  }
+  if (!reducedMotion && planeFocusTarget === 0 && planeFocusProgress === 0) {
+    orbitTheta += frameDuration * 0.000025;
+  }
+
   const scale = Math.min(width, height) * (width < 700 ? 0.92 : 1.15);
   const centerX = width * (width <= 760 ? 0.5 : 0.5 + sceneProgress * 0.23);
   const centerY = height * 0.57;
-  const elapsed = reducedMotion ? 0 : (time - startTime) * 0.000025;
-  const theta = Math.PI * 1.72 + elapsed;
+  const theta = orbitTheta;
   const phase = theta * 28;
   const headDrift = scale * 0.09 * ((theta - Math.PI) / Math.PI);
   const projectionCenterY = centerY + headDrift * 0.78;
-
-  drawPath(centerX, projectionCenterY, scale, theta);
   const galacticCenter = { x: centerX, y: centerY };
-  drawSagittariusA(galacticCenter, scale, time);
-  drawLabel(galacticCenter, 'Sagittarius A*', 42, -34);
-
   const sun = projectSun(theta, centerX, projectionCenterY, scale);
   const earth = projectPoint(theta, phase, centerX, projectionCenterY, scale);
+
+  const focusEase = planeFocusProgress * planeFocusProgress * (3 - 2 * planeFocusProgress);
+  const diagramCenterX = width * (width <= 760 ? 0.5 : 0.64);
+  const diagramCenterY = height * (width <= 760 ? 0.36 : 0.39);
+  const zoom = 1 + focusEase * 2.8;
+  const zoomAnchorX = sun.x + (diagramCenterX - sun.x) * focusEase;
+  const zoomAnchorY = sun.y + (diagramCenterY - sun.y) * focusEase;
+
+  context.save();
+  context.globalAlpha = 1 - focusEase;
+  context.translate(zoomAnchorX, zoomAnchorY);
+  context.scale(zoom, zoom);
+  context.translate(-sun.x, -sun.y);
+  drawPath(centerX, projectionCenterY, scale, theta);
+  drawSagittariusA(galacticCenter, scale, time);
+  drawLabel(galacticCenter, 'Sagittarius A*', 42, -34);
 
   drawBody(sun, Math.max(5, scale * 0.008), '#f4b54d', 'rgba(244,181,77,.8)');
   drawBody(earth, Math.max(2.5, scale * 0.0038), '#b5dcff', 'rgba(181,220,255,.85)');
   drawLabel(sun, 'Sun', -34, -24);
   drawLabel(earth, 'Earth', 32, 24);
+  context.restore();
+
+  if (planeFocusProgress > 0) {
+    drawPlaneFocus(diagramCenterX, diagramCenterY, scale, planeFocusProgress);
+  }
 
   if (!reducedMotion) requestAnimationFrame(render);
 }
@@ -232,6 +344,20 @@ function requestScrollUpdate() {
   scrollFrameRequested = true;
   requestAnimationFrame(updateScrollScene);
 }
+
+function setPlaneFocus(active) {
+  planeFocusTarget = active ? 1 : 0;
+  document.body.classList.toggle('plane-focus-active', active);
+  planeFocusCopy.setAttribute('aria-hidden', String(!active));
+  if (active) planeFocusBack.focus({ preventScroll: true });
+  else planeFocusTrigger.focus({ preventScroll: true });
+}
+
+planeFocusTrigger.addEventListener('click', () => setPlaneFocus(true));
+planeFocusBack.addEventListener('click', () => setPlaneFocus(false));
+window.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && planeFocusTarget === 1) setPlaneFocus(false);
+});
 
 window.addEventListener('resize', () => {
   resizeCanvas();
