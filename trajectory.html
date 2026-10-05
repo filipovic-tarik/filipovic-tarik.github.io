@@ -26,28 +26,57 @@
 
     <main>
       <section class="space-hero" aria-labelledby="trajectory-title">
-        <canvas id="trajectory-canvas" aria-hidden="true"></canvas>
-        <div class="space-vignette" aria-hidden="true"></div>
+        <div class="space-sticky">
+          <canvas id="trajectory-canvas" aria-hidden="true"></canvas>
+          <div class="space-vignette" aria-hidden="true"></div>
 
-        <div class="trajectory-content">
-          <p class="trajectory-kicker">Parametric study / Orbital mechanics</p>
-          <h1 id="trajectory-title">Earth’s Trajectory<br />Through the Universe</h1>
+          <div class="trajectory-content">
+            <div class="trajectory-heading">
+              <p class="trajectory-kicker">Parametric study / Orbital mechanics</p>
+              <h1 id="trajectory-title">
+                Earth’s Trajectory<br />Through the Universe
+                <span class="scroll-prompt">(Scroll)</span>
+              </h1>
+            </div>
 
-          <div class="equation-panel" aria-label="Parametric trajectory function">
-            <span>Scaled model</span>
-            <code>
-              c(t) = ((R + s cos(ωt))cos(t) + k sin(ωt)sin(t),<br />
-              (R + s cos(ωt))sin(t) − k sin(ωt)cos(t),<br />
-              at + f sin(ωt))
-            </code>
+            <div class="model-details">
+              <div class="equation-panel" aria-label="Parametric trajectory function">
+                <span>Scaled model</span>
+                <code>
+                  c(t) = ((R + s cos(ωt))cos(t) + k sin(ωt)sin(t),<br />
+                  (R + s cos(ωt))sin(t) − k sin(ωt)cos(t),<br />
+                  at + f sin(ωt))
+                </code>
+              </div>
+
+              <div class="parameter-panel">
+                <table>
+                  <caption>Model parameters</caption>
+                  <thead>
+                    <tr><th>Symbol</th><th>Quantity</th><th>Value</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>R</td><td>Galactic orbit radius</td><td>2.5 × 10²⁰ m</td></tr>
+                    <tr><td>s</td><td>Ecliptic semi-major axis</td><td>1.49597888 × 10¹¹ m</td></tr>
+                    <tr><td>k</td><td>Ecliptic tilt shift</td><td>7.410922 × 10¹⁰ m</td></tr>
+                    <tr><td>ω</td><td>Earth orbits per galactic revolution</td><td>240,000,000</td></tr>
+                    <tr><td>a</td><td>Reference-frame translation</td><td>Adjustable</td></tr>
+                    <tr><td>f</td><td>Vertical orbital stretch</td><td>1.299273 × 10¹¹ m</td></tr>
+                  </tbody>
+                </table>
+                <p>(All values based on recent data from NASA.)</p>
+              </div>
+            </div>
+
+            <div class="model-meta">
+              <div class="model-key" aria-label="Visualization legend">
+                <span><i class="path-key"></i> Earth’s modeled path</span>
+                <span><i class="sun-key"></i> Sun</span>
+                <span><i class="earth-key"></i> Earth</span>
+              </div>
+              <p class="scale-note">Orbital frequency and distances are compressed for visible comparison.</p>
+            </div>
           </div>
-
-          <div class="model-key" aria-label="Visualization legend">
-            <span><i class="path-key"></i> Earth’s modeled path</span>
-            <span><i class="sun-key"></i> Sun</span>
-            <span><i class="earth-key"></i> Earth</span>
-          </div>
-          <p class="scale-note">Orbital frequency and distances are compressed for visible comparison.</p>
         </div>
       </section>
 

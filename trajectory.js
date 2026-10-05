@@ -1,12 +1,22 @@
 const canvas = document.getElementById('trajectory-canvas');
 const context = canvas.getContext('2d');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const scrollStage = document.querySelector('.space-hero');
+const trajectoryHeading = document.querySelector('.trajectory-heading');
+const modelDetails = document.querySelector('.model-details');
+const parameterPanel = document.querySelector('.parameter-panel');
+const modelMeta = document.querySelector('.model-meta');
 
 let width = 0;
 let height = 0;
 let pixelRatio = 1;
 let stars = [];
 let startTime = performance.now();
+let scrollFrameRequested = false;
+
+function clamp(value, minimum = 0, maximum = 1) {
+  return Math.min(maximum, Math.max(minimum, value));
+}
 
 function seededRandom(seed) {
   const value = Math.sin(seed * 12.9898) * 43758.5453;
@@ -146,6 +156,39 @@ function render(time) {
   if (!reducedMotion) requestAnimationFrame(render);
 }
 
-window.addEventListener('resize', resizeCanvas);
+function updateScrollScene() {
+  const bounds = scrollStage.getBoundingClientRect();
+  const scrollRange = Math.max(1, bounds.height - window.innerHeight);
+  const progress = clamp(-bounds.top / scrollRange);
+  const titleFade = clamp(progress / 0.34);
+  const dataReveal = reducedMotion ? (progress > 0.18 ? 1 : 0) : clamp((progress - 0.18) / 0.48);
+  const compactView = window.innerWidth <= 760;
+
+  trajectoryHeading.style.opacity = String(1 - titleFade);
+  trajectoryHeading.style.transform = `translate3d(0, ${-220 * progress}px, 0)`;
+
+  const horizontalShift = compactView ? 0 : (1 - dataReveal) * 22;
+  const verticalShift = compactView ? -145 * progress : -125 * progress;
+  modelDetails.style.transform = `translate3d(${horizontalShift}%, ${verticalShift}px, 0)`;
+  modelMeta.style.transform = `translate3d(0, ${verticalShift}px, 0)`;
+
+  parameterPanel.style.opacity = String(dataReveal);
+  parameterPanel.style.transform = `translate3d(${(1 - dataReveal) * 48}px, 0, 0)`;
+  parameterPanel.style.pointerEvents = dataReveal > 0.85 ? 'auto' : 'none';
+  scrollFrameRequested = false;
+}
+
+function requestScrollUpdate() {
+  if (scrollFrameRequested) return;
+  scrollFrameRequested = true;
+  requestAnimationFrame(updateScrollScene);
+}
+
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  requestScrollUpdate();
+});
+window.addEventListener('scroll', requestScrollUpdate, { passive: true });
 resizeCanvas();
+updateScrollScene();
 requestAnimationFrame(render);

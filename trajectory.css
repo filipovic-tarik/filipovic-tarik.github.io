@@ -43,8 +43,14 @@ a { color: inherit; }
 
 .space-hero {
   position: relative;
+  height: 220svh;
+  background: var(--space);
+}
+.space-sticky {
+  position: sticky;
+  top: 0;
   display: grid;
-  min-height: 100svh;
+  height: 100svh;
   place-items: center;
   overflow: hidden;
   isolation: isolate;
@@ -62,10 +68,11 @@ a { color: inherit; }
 .trajectory-content {
   position: relative;
   z-index: 2;
-  width: min(980px, calc(100% - 48px));
+  width: min(1160px, calc(100% - 48px));
   padding: 126px 0 72px;
   text-align: center;
 }
+.trajectory-heading { will-change: transform, opacity; }
 .trajectory-kicker {
   margin: 0 0 24px;
   color: rgba(255,255,255,.62);
@@ -82,9 +89,31 @@ h1 {
   letter-spacing: -.065em;
   text-shadow: 0 2px 30px rgba(3,7,17,.9);
 }
+.scroll-prompt {
+  display: inline-block;
+  margin-left: .25em;
+  color: rgba(255,255,255,.52);
+  font-family: "Space Mono", monospace;
+  font-size: .16em;
+  font-weight: 400;
+  letter-spacing: .06em;
+  vertical-align: .55em;
+}
+.model-details {
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 24px;
+  align-items: stretch;
+  margin-top: 58px;
+  will-change: transform;
+}
 .equation-panel {
-  width: min(760px, 100%);
-  margin: 58px auto 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  min-height: 218px;
+  margin: 0;
   padding: 20px 24px 22px;
   border: 1px solid rgba(255,255,255,.2);
   background: rgba(3,7,17,.72);
@@ -104,6 +133,45 @@ h1 {
   font-size: clamp(.67rem, 1.25vw, .92rem);
   line-height: 1.9;
 }
+.parameter-panel {
+  min-height: 218px;
+  padding: 17px 18px 14px;
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(3,7,17,.78);
+  text-align: left;
+  opacity: 0;
+  transform: translateX(48px);
+  backdrop-filter: blur(12px);
+  will-change: transform, opacity;
+}
+.parameter-panel table { width: 100%; border-collapse: collapse; }
+.parameter-panel caption {
+  margin-bottom: 10px;
+  color: rgba(255,255,255,.5);
+  font-size: .62rem;
+  letter-spacing: .15em;
+  text-align: left;
+  text-transform: uppercase;
+}
+.parameter-panel th,
+.parameter-panel td {
+  padding: 6px 7px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  font-size: .66rem;
+  line-height: 1.3;
+  vertical-align: top;
+}
+.parameter-panel th {
+  color: rgba(255,255,255,.42);
+  font-size: .56rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.parameter-panel td:first-child { color: var(--orbit); font-family: "Space Mono", monospace; }
+.parameter-panel td:last-child { color: rgba(255,255,255,.76); white-space: nowrap; }
+.parameter-panel > p { margin: 11px 0 0; color: rgba(255,255,255,.38); font-size: .58rem; }
+.model-meta { margin-top: 28px; will-change: transform; }
 .model-key {
   display: flex;
   justify-content: center;
@@ -165,10 +233,18 @@ h1 {
 @media (max-width: 760px) {
   .trajectory-header { width: calc(100% - 36px); padding: 22px 0; }
   .trajectory-header span { display: none; }
-  .trajectory-content { width: min(100% - 30px, 620px); padding-top: 110px; }
+  .space-hero { height: 260svh; }
+  .trajectory-content { width: min(100% - 30px, 620px); padding-top: 96px; }
   h1 { font-size: clamp(3.1rem, 15vw, 5.6rem); }
-  .equation-panel { margin-top: 46px; padding-inline: 12px; overflow-wrap: anywhere; }
+  .scroll-prompt { display: block; margin: 16px 0 0; font-size: .18em; vertical-align: baseline; }
+  .model-details { grid-template-columns: 1fr; gap: 12px; margin-top: 40px; }
+  .equation-panel { min-height: 130px; padding-inline: 12px; overflow-wrap: anywhere; }
   .equation-panel code { font-size: .62rem; }
+  .parameter-panel { min-height: 0; padding: 12px; }
+  .parameter-panel th, .parameter-panel td { padding: 4px; font-size: .57rem; }
+  .parameter-panel th { font-size: .5rem; }
+  .parameter-panel > p { font-size: .52rem; }
+  .model-meta { margin-top: 15px; }
   .model-key { gap: 13px; }
   .paper-footer { grid-template-columns: 1fr; padding: 70px 20px 40px; }
   .paper-footer > a { grid-column: 1; }
@@ -176,4 +252,8 @@ h1 {
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .trajectory-heading,
+  .model-details,
+  .model-meta,
+  .parameter-panel { transition: none; }
 }
