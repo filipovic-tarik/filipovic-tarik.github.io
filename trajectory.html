@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A visual parametric model of Earth’s trajectory through nested orbital systems."
+    />
+    <meta name="theme-color" content="#030711" />
+    <title>Earth’s Trajectory Through the Universe | Tarik Filipovic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="trajectory.css" />
+    <script src="trajectory.js" defer></script>
+  </head>
+  <body>
+    <header class="trajectory-header">
+      <a href="index.html#projects" aria-label="Back to Tarik Filipovic’s projects">← Tarik Filipovic</a>
+      <span>Independent research · 2022</span>
+    </header>
+
+    <main>
+      <section class="space-hero" aria-labelledby="trajectory-title">
+        <canvas id="trajectory-canvas" aria-hidden="true"></canvas>
+        <div class="space-vignette" aria-hidden="true"></div>
+
+        <div class="trajectory-content">
+          <p class="trajectory-kicker">Parametric study / Orbital mechanics</p>
+          <h1 id="trajectory-title">Earth’s Trajectory<br />Through the Universe</h1>
+
+          <div class="equation-panel" aria-label="Parametric trajectory function">
+            <span>Scaled model</span>
+            <code>
+              c(t) = ((R + s cos(ωt))cos(t) + k sin(ωt)sin(t),<br />
+              (R + s cos(ωt))sin(t) − k sin(ωt)cos(t),<br />
+              at + f sin(ωt))
+            </code>
+          </div>
+
+          <div class="model-key" aria-label="Visualization legend">
+            <span><i class="path-key"></i> Earth’s modeled path</span>
+            <span><i class="sun-key"></i> Sun</span>
+            <span><i class="earth-key"></i> Earth</span>
+          </div>
+          <p class="scale-note">Orbital frequency and distances are compressed for visible comparison.</p>
+        </div>
+      </section>
+
+      <footer class="paper-footer">
+        <div class="paper-footer-heading">
+          <p>Original research paper</p>
+          <h2>This project is based on the original 21-page mathematical investigation.</h2>
+        </div>
+        <p class="paper-footer-copy">
+          The paper documents the derivation, calculations, assumptions, model
+          limitations, and GeoGebra experiments behind this visualization.
+        </p>
+        <a href="assets/projects/earths-trajectory.pdf" target="_blank" rel="noreferrer">
+          Read the original paper <span aria-hidden="true">↗</span>
+        </a>
+      </footer>
+    </main>
+  </body>
+</html>

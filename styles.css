@@ -220,6 +220,75 @@ h1 {
   box-shadow: 0 16px 36px rgba(16, 42, 42, 0.1);
 }
 
+.project-space-preview {
+  position: relative;
+  min-height: 360px;
+  border-color: rgba(255, 255, 255, 0.14);
+  background-color: #030711;
+  background-image:
+    radial-gradient(circle at 13% 16%, rgba(255,255,255,.8) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 72% 24%, rgba(255,255,255,.58) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 84% 78%, rgba(255,255,255,.72) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 26% 82%, rgba(255,255,255,.45) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 52% 61%, rgba(255,255,255,.42) 0 1px, transparent 1.5px);
+}
+
+.mini-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 78%;
+  aspect-ratio: 1.5;
+  border: 1px solid rgba(120, 174, 255, 0.55);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(-13deg);
+}
+
+.mini-orbit::before,
+.mini-orbit::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+
+.mini-orbit::before {
+  top: 42%;
+  left: 62%;
+  width: 15px;
+  height: 15px;
+  background: #f5b44d;
+  box-shadow: 0 0 22px rgba(245, 180, 77, 0.75);
+}
+
+.mini-orbit::after {
+  top: 33%;
+  left: 68%;
+  width: 6px;
+  height: 6px;
+  background: #a9d3ff;
+  box-shadow: 0 0 12px rgba(169, 211, 255, 0.8);
+}
+
+.mini-orbit i {
+  position: absolute;
+  inset: 12%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+}
+
+.mini-orbit i:nth-child(2) { inset: 25%; }
+.mini-orbit i:nth-child(3) { inset: 39%; }
+
+.mini-equation {
+  position: absolute;
+  right: 18px;
+  bottom: 14px;
+  color: rgba(255,255,255,.52);
+  font-family: Georgia, serif;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
 .project-preview img {
   display: block;
   width: 100%;
@@ -230,6 +299,11 @@ h1 {
 .project-preview:hover img,
 .project-preview:focus-visible img {
   transform: scale(1.018);
+}
+
+.project-space-preview:hover .mini-orbit,
+.project-space-preview:focus-visible .mini-orbit {
+  border-color: rgba(223, 107, 66, 0.9);
 }
 
 .project-type {
