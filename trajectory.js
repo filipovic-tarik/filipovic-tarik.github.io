@@ -7,8 +7,11 @@ const modelDetails = document.querySelector('.model-details');
 const parameterPanel = document.querySelector('.parameter-panel');
 const modelMeta = document.querySelector('.model-meta');
 const planeFocusTrigger = document.querySelector('.plane-focus-trigger');
-const planeFocusBack = document.querySelector('.plane-focus-back');
-const planeFocusCopy = document.querySelector('.plane-focus-copy');
+const planeFocusBack = document.querySelector('.orbital-plane-back');
+const planeFocusCopy = document.querySelector('.orbital-plane-copy');
+const radiusFocusTrigger = document.querySelector('.radius-focus-trigger');
+const radiusFocusBack = document.querySelector('.radius-focus-back');
+const radiusFocusCopy = document.querySelector('.radius-focus-copy');
 
 let width = 0;
 let height = 0;
@@ -25,6 +28,9 @@ let planeViewRotation = 0;
 let planeEarthStartAngle = 0;
 let planeEarthTargetAngle = -60.3 * Math.PI / 180;
 let planeFocusReady = false;
+let radiusFocusProgress = 0;
+let radiusFocusTarget = 0;
+let radiusFocusReady = false;
 
 function clamp(value, minimum = 0, maximum = 1) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -54,7 +60,16 @@ function resizeCanvas() {
   }));
 }
 
-function projectPoint(theta, phase, centerX, centerY, scale, viewRotation = 0, planeCompression = 0.34) {
+function projectPoint(
+  theta,
+  phase,
+  centerX,
+  centerY,
+  scale,
+  viewRotation = 0,
+  planeCompression = 0.34,
+  verticalProjection = 0.78,
+) {
   const radius = scale * 0.36;
   const earthRadius = scale * 0.027;
   const tiltShift = earthRadius * 0.5;
@@ -72,11 +87,19 @@ function projectPoint(theta, phase, centerX, centerY, scale, viewRotation = 0, p
 
   return {
     x: centerX + rotatedX,
-    y: centerY + rotatedY * planeCompression - z * 0.78,
+    y: centerY + rotatedY * planeCompression - z * verticalProjection,
   };
 }
 
-function projectSun(theta, centerX, centerY, scale, viewRotation = 0, planeCompression = 0.34) {
+function projectSun(
+  theta,
+  centerX,
+  centerY,
+  scale,
+  viewRotation = 0,
+  planeCompression = 0.34,
+  verticalProjection = 0.78,
+) {
   const radius = scale * 0.36;
   const drift = scale * 0.09;
   const x = radius * Math.cos(theta);
@@ -84,7 +107,7 @@ function projectSun(theta, centerX, centerY, scale, viewRotation = 0, planeCompr
   const z = drift * ((theta - Math.PI) / Math.PI);
   const rotatedX = x * Math.cos(viewRotation) - y * Math.sin(viewRotation);
   const rotatedY = x * Math.sin(viewRotation) + y * Math.cos(viewRotation);
-  return { x: centerX + rotatedX, y: centerY + rotatedY * planeCompression - z * 0.78 };
+  return { x: centerX + rotatedX, y: centerY + rotatedY * planeCompression - z * verticalProjection };
 }
 
 function drawStars(time) {
@@ -97,7 +120,15 @@ function drawStars(time) {
   }
 }
 
-function drawPath(centerX, centerY, scale, headTheta, viewRotation = 0, planeCompression = 0.34) {
+function drawPath(
+  centerX,
+  centerY,
+  scale,
+  headTheta,
+  viewRotation = 0,
+  planeCompression = 0.34,
+  verticalProjection = 0.78,
+) {
   const segments = 1300;
   const orbitSpan = Math.PI * 2;
   const tailTheta = headTheta - orbitSpan;
@@ -108,7 +139,16 @@ function drawPath(centerX, centerY, scale, headTheta, viewRotation = 0, planeCom
   for (let index = 0; index <= segments; index += 1) {
     const theta = tailTheta + (index / segments) * orbitSpan;
     const phase = theta * 28;
-    const point = projectPoint(theta, phase, centerX, centerY, scale, viewRotation, planeCompression);
+    const point = projectPoint(
+      theta,
+      phase,
+      centerX,
+      centerY,
+      scale,
+      viewRotation,
+      planeCompression,
+      verticalProjection,
+    );
     if (index === 0) context.moveTo(point.x, point.y);
     else context.lineTo(point.x, point.y);
   }
@@ -119,7 +159,15 @@ function drawPath(centerX, centerY, scale, headTheta, viewRotation = 0, planeCom
   context.beginPath();
   for (let index = 0; index <= 260; index += 1) {
     const theta = tailTheta + (index / 260) * orbitSpan;
-    const point = projectSun(theta, centerX, centerY, scale, viewRotation, planeCompression);
+    const point = projectSun(
+      theta,
+      centerX,
+      centerY,
+      scale,
+      viewRotation,
+      planeCompression,
+      verticalProjection,
+    );
     if (index === 0) context.moveTo(point.x, point.y);
     else context.lineTo(point.x, point.y);
   }
@@ -287,6 +335,31 @@ function drawLabel(point, label, offsetX, offsetY) {
   context.fillText(label.toUpperCase(), targetX + (offsetX < 0 ? -6 : 6), targetY + 3);
 }
 
+function drawGalacticRadius(center, sun, progress) {
+  const endX = center.x + (sun.x - center.x) * progress;
+  const endY = center.y + (sun.y - center.y) * progress;
+  const midpointX = (center.x + endX) / 2;
+  const midpointY = (center.y + endY) / 2;
+
+  context.save();
+  context.strokeStyle = 'rgba(255,255,255,.9)';
+  context.lineWidth = 1.4;
+  context.shadowColor = 'rgba(255,255,255,.45)';
+  context.shadowBlur = 8;
+  context.beginPath();
+  context.moveTo(center.x, center.y);
+  context.lineTo(endX, endY);
+  context.stroke();
+  context.restore();
+
+  if (progress > 0.72) {
+    context.fillStyle = `rgba(255,255,255,${clamp((progress - 0.72) / 0.28) * 0.88})`;
+    context.font = '700 11px "Space Mono", monospace';
+    context.textAlign = 'center';
+    context.fillText('R = 2.5 × 10²⁰ m', midpointX, midpointY - 12);
+  }
+}
+
 function render(time) {
   context.clearRect(0, 0, width, height);
   drawStars(time);
@@ -295,6 +368,7 @@ function render(time) {
   lastRenderTime = time;
   if (reducedMotion) {
     planeFocusProgress = planeFocusTarget;
+    radiusFocusProgress = radiusFocusTarget;
   } else if (planeFocusProgress !== planeFocusTarget) {
     const direction = Math.sign(planeFocusTarget - planeFocusProgress);
     const transitionDuration = planeFocusTarget === 1 ? 1800 : 650;
@@ -303,7 +377,21 @@ function render(time) {
       planeFocusProgress = planeFocusTarget;
     }
   }
-  if (!reducedMotion && planeFocusTarget === 0 && planeFocusProgress === 0) {
+  if (!reducedMotion && radiusFocusProgress !== radiusFocusTarget) {
+    const direction = Math.sign(radiusFocusTarget - radiusFocusProgress);
+    const transitionDuration = radiusFocusTarget === 1 ? 1400 : 650;
+    radiusFocusProgress = clamp(radiusFocusProgress + direction * frameDuration / transitionDuration);
+    if (Math.abs(radiusFocusTarget - radiusFocusProgress) < 0.002) {
+      radiusFocusProgress = radiusFocusTarget;
+    }
+  }
+  if (
+    !reducedMotion
+    && planeFocusTarget === 0
+    && planeFocusProgress === 0
+    && radiusFocusTarget === 0
+    && radiusFocusProgress === 0
+  ) {
     orbitTheta += frameDuration * 0.000025;
   }
 
@@ -313,7 +401,6 @@ function render(time) {
   const theta = orbitTheta;
   const phase = theta * 28;
   const headDrift = scale * 0.09 * ((theta - Math.PI) / Math.PI);
-  const projectionCenterY = centerY + headDrift * 0.78;
   const smooth = (value) => value * value * (3 - 2 * value);
   const flashProgress = smooth(clamp(planeFocusProgress / 0.14));
   const levelProgress = smooth(clamp((planeFocusProgress - 0.14) / 0.2));
@@ -322,8 +409,14 @@ function render(time) {
   const colorProgressRaw = clamp((planeFocusProgress - 0.74) / 0.26);
   const colorProgress = smooth(colorProgressRaw);
   const annotationProgress = smooth(clamp((planeFocusProgress - 0.7) / 0.24));
+  const radiusBirdProgress = smooth(clamp((radiusFocusProgress - 0.12) / 0.62));
+  const radiusLineProgress = smooth(clamp((radiusFocusProgress - 0.68) / 0.26));
   const viewRotation = planeViewRotation * orbitRotateProgress;
-  const planeCompression = 0.34 + (0.065 - 0.34) * levelProgress;
+  const planeFocusCompression = 0.34 + (0.065 - 0.34) * levelProgress;
+  const planeCompression = planeFocusCompression
+    + (1 - planeFocusCompression) * radiusBirdProgress;
+  const verticalProjection = 0.78 * (1 - radiusBirdProgress);
+  const projectionCenterY = centerY + headDrift * verticalProjection;
   const galacticCenter = { x: centerX, y: centerY };
   const sun = projectSun(
     theta,
@@ -332,6 +425,7 @@ function render(time) {
     scale,
     viewRotation,
     planeCompression,
+    verticalProjection,
   );
   const earth = projectPoint(
     theta,
@@ -341,6 +435,7 @@ function render(time) {
     scale,
     viewRotation,
     planeCompression,
+    verticalProjection,
   );
 
   const diagramCenterX = width * (width <= 760 ? 0.5 : 0.64);
@@ -373,6 +468,7 @@ function render(time) {
     theta,
     viewRotation,
     planeCompression,
+    verticalProjection,
   );
   drawSagittariusA(galacticCenter, scale, time);
   drawLabel(galacticCenter, 'Sagittarius A*', 42, -34);
@@ -390,6 +486,10 @@ function render(time) {
     );
   }
   context.restore();
+
+  if (radiusLineProgress > 0) {
+    drawGalacticRadius(galacticCenter, sun, radiusLineProgress);
+  }
 
   const sharedEarthX = zoomAnchorX + (alignedEarthX - sun.x) * zoom;
   const sharedEarthY = zoomAnchorY + (alignedEarthY - sun.y) * zoom;
@@ -419,6 +519,14 @@ function render(time) {
     document.body.classList.toggle('plane-focus-ready', readyNow);
     planeFocusCopy.setAttribute('aria-hidden', String(!readyNow));
     if (readyNow) planeFocusBack.focus({ preventScroll: true });
+  }
+
+  const radiusReadyNow = radiusFocusTarget === 1 && radiusFocusProgress >= 0.995;
+  if (radiusReadyNow !== radiusFocusReady) {
+    radiusFocusReady = radiusReadyNow;
+    document.body.classList.toggle('radius-focus-ready', radiusReadyNow);
+    radiusFocusCopy.setAttribute('aria-hidden', String(!radiusReadyNow));
+    if (radiusReadyNow) radiusFocusBack.focus({ preventScroll: true });
   }
 
   if (!reducedMotion) requestAnimationFrame(render);
@@ -473,10 +581,24 @@ function setPlaneFocus(active) {
   }
 }
 
+function setRadiusFocus(active) {
+  radiusFocusTarget = active ? 1 : 0;
+  document.body.classList.toggle('radius-focus-active', active);
+  if (!active) {
+    radiusFocusReady = false;
+    document.body.classList.remove('radius-focus-ready');
+    radiusFocusCopy.setAttribute('aria-hidden', 'true');
+    radiusFocusTrigger.focus({ preventScroll: true });
+  }
+}
+
 planeFocusTrigger.addEventListener('click', () => setPlaneFocus(true));
 planeFocusBack.addEventListener('click', () => setPlaneFocus(false));
+radiusFocusTrigger.addEventListener('click', () => setRadiusFocus(true));
+radiusFocusBack.addEventListener('click', () => setRadiusFocus(false));
 window.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && planeFocusTarget === 1) setPlaneFocus(false);
+  if (event.key === 'Escape' && radiusFocusTarget === 1) setRadiusFocus(false);
 });
 
 window.addEventListener('resize', () => {

@@ -177,7 +177,7 @@ h1 {
 .parameter-panel td:last-child { color: rgba(255,255,255,.76); white-space: nowrap; }
 .parameter-panel > p { margin: 7px 0 0; color: rgba(255,255,255,.48); font-size: .58rem; }
 .interactive-parameter td { background: rgba(121,174,247,.035); }
-.plane-focus-trigger {
+.parameter-view-trigger {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -189,14 +189,14 @@ h1 {
   font: inherit;
   cursor: pointer;
 }
-.plane-focus-trigger span {
+.parameter-view-trigger span {
   font-size: .48rem;
   font-weight: 700;
   letter-spacing: .08em;
   text-transform: uppercase;
 }
-.plane-focus-trigger:hover,
-.plane-focus-trigger:focus-visible { color: #fff; border-color: #fff; outline: none; }
+.parameter-view-trigger:hover,
+.parameter-view-trigger:focus-visible { color: #fff; border-color: #fff; outline: none; }
 .model-meta {
   width: min(520px, 42vw);
   margin-top: 9px;
@@ -277,8 +277,12 @@ h1 {
 .plane-focus-back:focus-visible { border-color: var(--orbit); color: #b5dcff; outline: none; }
 body.plane-focus-active .trajectory-heading,
 body.plane-focus-active .model-details,
-body.plane-focus-active .model-meta { opacity: 0 !important; pointer-events: none; }
-body.plane-focus-active.plane-focus-ready .plane-focus-copy {
+body.plane-focus-active .model-meta,
+body.radius-focus-active .trajectory-heading,
+body.radius-focus-active .model-details,
+body.radius-focus-active .model-meta { opacity: 0 !important; pointer-events: none; }
+body.plane-focus-active.plane-focus-ready .orbital-plane-copy,
+body.radius-focus-active.radius-focus-ready .radius-focus-copy {
   opacity: 1;
   pointer-events: auto;
   transform: translate(-50%, 0);

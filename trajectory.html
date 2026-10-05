@@ -15,8 +15,8 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="trajectory.css?v=20261005-10" />
-    <script src="trajectory.js?v=20261005-13" defer></script>
+    <link rel="stylesheet" href="trajectory.css?v=20261005-11" />
+    <script src="trajectory.js?v=20261005-14" defer></script>
   </head>
   <body>
     <header class="trajectory-header">
@@ -56,7 +56,15 @@
                     <tr><th>Symbol</th><th>Quantity</th><th>Value</th></tr>
                   </thead>
                   <tbody>
-                    <tr><td>R</td><td>Galactic orbit radius</td><td>2.5 × 10²⁰ m</td></tr>
+                    <tr class="interactive-parameter">
+                      <td>R</td>
+                      <td>Galactic orbit radius</td>
+                      <td>
+                        <button class="parameter-view-trigger radius-focus-trigger" type="button" aria-controls="radius-focus-copy">
+                          2.5 × 10²⁰ m <span>View</span>
+                        </button>
+                      </td>
+                    </tr>
                     <tr><td>s</td><td>Ecliptic semi-major axis</td><td>1.49597888 × 10¹¹ m</td></tr>
                     <tr><td>k</td><td>Ecliptic tilt shift</td><td>7.410922 × 10¹⁰ m</td></tr>
                     <tr><td>ω</td><td>Earth orbits per galactic revolution</td><td>240,000,000</td></tr>
@@ -66,7 +74,7 @@
                       <td>∠</td>
                       <td>Sun/Earth orbital-plane angle</td>
                       <td>
-                        <button class="plane-focus-trigger" type="button" aria-controls="plane-focus-copy">
+                        <button class="parameter-view-trigger plane-focus-trigger" type="button" aria-controls="plane-focus-copy">
                           60.3° <span>View</span>
                         </button>
                       </td>
@@ -88,7 +96,7 @@
             </div>
           </div>
 
-          <aside class="plane-focus-copy" id="plane-focus-copy" aria-hidden="true">
+          <aside class="plane-focus-copy orbital-plane-copy" id="plane-focus-copy" aria-hidden="true">
             <p class="plane-focus-kicker">Orbital-plane close-up · 60.3°</p>
             <h2>The ecliptic and Galactic planes</h2>
             <p>
@@ -98,7 +106,17 @@
               The model therefore tilts the initially upright Earth-orbit loop by the complementary
               29.7°.
             </p>
-            <button class="plane-focus-back" type="button">← Back to the full path</button>
+            <button class="plane-focus-back orbital-plane-back" type="button">← Back to the full path</button>
+          </aside>
+
+          <aside class="plane-focus-copy radius-focus-copy" id="radius-focus-copy" aria-hidden="true">
+            <p class="plane-focus-kicker">Galactic orbit radius · R</p>
+            <h2>26,000 light-years from the Galactic center</h2>
+            <p>
+              The white radius joins Sagittarius A* at the center of the Milky Way to the Sun’s
+              current position. In the model, this distance is approximately 2.5 × 10²⁰ meters.
+            </p>
+            <button class="plane-focus-back radius-focus-back" type="button">← Back to the full path</button>
           </aside>
         </div>
       </section>
