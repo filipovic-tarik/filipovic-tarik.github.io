@@ -139,7 +139,7 @@ function render(time) {
   drawStars(time);
 
   const scale = Math.min(width, height) * (width < 700 ? 0.92 : 1.15);
-  const centerX = width * (width <= 760 ? 0.5 : 0.5 + sceneProgress * 0.18);
+  const centerX = width * (width <= 760 ? 0.5 : 0.5 + sceneProgress * 0.23);
   const centerY = height * 0.57;
   drawPath(centerX, centerY, scale);
 

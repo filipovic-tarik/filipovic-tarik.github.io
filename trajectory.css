@@ -68,8 +68,8 @@ a { color: inherit; }
 .trajectory-content {
   position: relative;
   z-index: 2;
-  width: min(1320px, calc(100% - 64px));
-  padding: 126px 0 72px;
+  width: 100%;
+  padding: 126px clamp(32px, 4vw, 72px) 72px;
   text-align: center;
 }
 .trajectory-heading { will-change: transform, opacity; }
@@ -104,7 +104,7 @@ h1 {
   flex-direction: column;
   gap: 14px;
   align-items: stretch;
-  width: min(520px, 44vw);
+  width: min(520px, 42vw);
   margin-top: 46px;
   margin-right: auto;
   will-change: transform;
@@ -174,7 +174,7 @@ h1 {
 .parameter-panel td:last-child { color: rgba(255,255,255,.76); white-space: nowrap; }
 .parameter-panel > p { margin: 11px 0 0; color: rgba(255,255,255,.38); font-size: .58rem; }
 .model-meta {
-  width: min(520px, 44vw);
+  width: min(520px, 42vw);
   margin-top: 18px;
   margin-right: auto;
   will-change: transform;
