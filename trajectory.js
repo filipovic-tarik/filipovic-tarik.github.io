@@ -13,6 +13,7 @@ let pixelRatio = 1;
 let stars = [];
 let startTime = performance.now();
 let scrollFrameRequested = false;
+let sceneProgress = 0;
 
 function clamp(value, minimum = 0, maximum = 1) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -138,7 +139,7 @@ function render(time) {
   drawStars(time);
 
   const scale = Math.min(width, height) * (width < 700 ? 0.92 : 1.15);
-  const centerX = width / 2;
+  const centerX = width * (width <= 760 ? 0.5 : 0.5 + sceneProgress * 0.18);
   const centerY = height * 0.57;
   drawPath(centerX, centerY, scale);
 
@@ -163,14 +164,17 @@ function updateScrollScene() {
   const titleFade = clamp(progress / 0.34);
   const dataReveal = reducedMotion ? (progress > 0.18 ? 1 : 0) : clamp((progress - 0.18) / 0.48);
   const compactView = window.innerWidth <= 760;
+  sceneProgress = dataReveal;
 
   trajectoryHeading.style.opacity = String(1 - titleFade);
   trajectoryHeading.style.transform = `translate3d(0, ${-220 * progress}px, 0)`;
 
-  const horizontalShift = compactView ? 0 : (1 - dataReveal) * 22;
+  const contentWidth = modelDetails.parentElement.getBoundingClientRect().width;
+  const detailsWidth = modelDetails.getBoundingClientRect().width;
+  const horizontalShift = compactView ? 0 : (1 - dataReveal) * Math.max(0, (contentWidth - detailsWidth) / 2);
   const verticalShift = compactView ? -145 * progress : -125 * progress;
-  modelDetails.style.transform = `translate3d(${horizontalShift}%, ${verticalShift}px, 0)`;
-  modelMeta.style.transform = `translate3d(0, ${verticalShift}px, 0)`;
+  modelDetails.style.transform = `translate3d(${horizontalShift}px, ${verticalShift}px, 0)`;
+  modelMeta.style.transform = `translate3d(${horizontalShift}px, ${verticalShift}px, 0)`;
 
   parameterPanel.style.opacity = String(dataReveal);
   parameterPanel.style.transform = `translate3d(${(1 - dataReveal) * 48}px, 0, 0)`;

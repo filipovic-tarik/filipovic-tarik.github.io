@@ -68,7 +68,7 @@ a { color: inherit; }
 .trajectory-content {
   position: relative;
   z-index: 2;
-  width: min(1160px, calc(100% - 48px));
+  width: min(1320px, calc(100% - 64px));
   padding: 126px 0 72px;
   text-align: center;
 }
@@ -100,11 +100,13 @@ h1 {
   vertical-align: .55em;
 }
 .model-details {
-  display: grid;
-  grid-template-columns: 1.1fr .9fr;
-  gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
   align-items: stretch;
-  margin-top: 58px;
+  width: min(520px, 44vw);
+  margin-top: 46px;
+  margin-right: auto;
   will-change: transform;
 }
 .equation-panel {
@@ -112,9 +114,9 @@ h1 {
   flex-direction: column;
   justify-content: center;
   width: 100%;
-  min-height: 218px;
+  min-height: 156px;
   margin: 0;
-  padding: 20px 24px 22px;
+  padding: 18px 22px 20px;
   border: 1px solid rgba(255,255,255,.2);
   background: rgba(3,7,17,.72);
   backdrop-filter: blur(12px);
@@ -134,7 +136,7 @@ h1 {
   line-height: 1.9;
 }
 .parameter-panel {
-  min-height: 218px;
+  min-height: 0;
   padding: 17px 18px 14px;
   border: 1px solid rgba(255,255,255,.2);
   background: rgba(3,7,17,.78);
@@ -171,10 +173,15 @@ h1 {
 .parameter-panel td:first-child { color: var(--orbit); font-family: "Space Mono", monospace; }
 .parameter-panel td:last-child { color: rgba(255,255,255,.76); white-space: nowrap; }
 .parameter-panel > p { margin: 11px 0 0; color: rgba(255,255,255,.38); font-size: .58rem; }
-.model-meta { margin-top: 28px; will-change: transform; }
+.model-meta {
+  width: min(520px, 44vw);
+  margin-top: 18px;
+  margin-right: auto;
+  will-change: transform;
+}
 .model-key {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
   gap: 24px;
   color: rgba(255,255,255,.7);
@@ -237,14 +244,14 @@ h1 {
   .trajectory-content { width: min(100% - 30px, 620px); padding-top: 96px; }
   h1 { font-size: clamp(3.1rem, 15vw, 5.6rem); }
   .scroll-prompt { display: block; margin: 16px 0 0; font-size: .18em; vertical-align: baseline; }
-  .model-details { grid-template-columns: 1fr; gap: 12px; margin-top: 40px; }
+  .model-details { width: 100%; gap: 12px; margin-top: 40px; }
   .equation-panel { min-height: 130px; padding-inline: 12px; overflow-wrap: anywhere; }
   .equation-panel code { font-size: .62rem; }
   .parameter-panel { min-height: 0; padding: 12px; }
   .parameter-panel th, .parameter-panel td { padding: 4px; font-size: .57rem; }
   .parameter-panel th { font-size: .5rem; }
   .parameter-panel > p { font-size: .52rem; }
-  .model-meta { margin-top: 15px; }
+  .model-meta { width: 100%; margin-top: 15px; }
   .model-key { gap: 13px; }
   .paper-footer { grid-template-columns: 1fr; padding: 70px 20px 40px; }
   .paper-footer > a { grid-column: 1; }
