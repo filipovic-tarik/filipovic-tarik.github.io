@@ -438,7 +438,7 @@ function updateScrollScene() {
   const contentWidth = modelDetails.parentElement.getBoundingClientRect().width;
   const detailsWidth = modelDetails.getBoundingClientRect().width;
   const horizontalShift = compactView ? 0 : (1 - dataReveal) * Math.max(0, (contentWidth - detailsWidth) / 2);
-  const verticalShift = compactView ? -145 * progress : -125 * progress;
+  const verticalShift = compactView ? -170 * progress : -225 * progress;
   modelDetails.style.transform = `translate3d(${horizontalShift}px, ${verticalShift}px, 0)`;
   modelMeta.style.transform = `translate3d(${horizontalShift}px, ${verticalShift}px, 0)`;
 
