@@ -119,6 +119,43 @@ function drawBody(point, radius, fill, glow) {
   context.restore();
 }
 
+function drawSagittariusA(point, scale, time) {
+  const coreRadius = Math.max(7, scale * 0.009);
+  const pulse = reducedMotion ? 1 : 0.92 + Math.sin(time * 0.0012) * 0.08;
+  const glow = context.createRadialGradient(
+    point.x,
+    point.y,
+    coreRadius * 0.35,
+    point.x,
+    point.y,
+    coreRadius * 4.2,
+  );
+  glow.addColorStop(0, 'rgba(255, 244, 211, 0.95)');
+  glow.addColorStop(0.18, 'rgba(244, 181, 77, 0.68)');
+  glow.addColorStop(0.48, 'rgba(223, 107, 66, 0.2)');
+  glow.addColorStop(1, 'rgba(223, 107, 66, 0)');
+
+  context.save();
+  context.beginPath();
+  context.fillStyle = glow;
+  context.arc(point.x, point.y, coreRadius * 4.2 * pulse, 0, Math.PI * 2);
+  context.fill();
+
+  context.translate(point.x, point.y);
+  context.rotate(-0.18);
+  context.scale(1, 0.34);
+  context.lineWidth = Math.max(2, coreRadius * 0.34);
+  context.strokeStyle = 'rgba(255, 208, 121, 0.9)';
+  context.shadowColor = 'rgba(244, 181, 77, 0.9)';
+  context.shadowBlur = coreRadius * 1.6;
+  context.beginPath();
+  context.ellipse(0, 0, coreRadius * 2.35, coreRadius * 1.45, 0, 0, Math.PI * 2);
+  context.stroke();
+  context.restore();
+
+  drawBody(point, coreRadius, '#02040a', 'rgba(244,181,77,.72)');
+}
+
 function drawLabel(point, label, offsetX, offsetY) {
   const targetX = point.x + offsetX;
   const targetY = point.y + offsetY;
@@ -142,6 +179,9 @@ function render(time) {
   const centerX = width * (width <= 760 ? 0.5 : 0.5 + sceneProgress * 0.23);
   const centerY = height * 0.57;
   drawPath(centerX, centerY, scale);
+  const galacticCenter = { x: centerX, y: centerY };
+  drawSagittariusA(galacticCenter, scale, time);
+  drawLabel(galacticCenter, 'Sagittarius A*', 42, -34);
 
   const elapsed = reducedMotion ? 0 : (time - startTime) * 0.000025;
   const theta = Math.PI * 1.72 + elapsed;

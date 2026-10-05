@@ -194,6 +194,11 @@ h1 {
 .model-key .path-key { width: 18px; height: 1px; border-radius: 0; background: var(--orbit); }
 .sun-key { background: var(--sun); box-shadow: 0 0 10px rgba(244,181,77,.7); }
 .earth-key { background: var(--earth); box-shadow: 0 0 8px rgba(181,220,255,.7); }
+.black-hole-key {
+  border: 1px solid var(--sun);
+  background: #02040a;
+  box-shadow: 0 0 9px rgba(244,181,77,.7);
+}
 .scale-note { margin: 18px 0 0; color: rgba(255,255,255,.4); font-size: .68rem; }
 
 .paper-footer {
