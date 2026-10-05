@@ -7,6 +7,9 @@ The site includes Tarik's portrait and a dedicated nine-piece graphite gallery a
 optimized images live in `assets/gallery`; the locally stored source photographs in
 `assets/Images` are intentionally excluded from deployment.
 
+The selected-work section also features the independent paper *Earth's Trajectory
+Through the Universe*, with a browser-readable copy stored in `assets/projects`.
+
 **Live site:** [https://filipovic-tarik.github.io](https://filipovic-tarik.github.io)
 
 ## Local development
