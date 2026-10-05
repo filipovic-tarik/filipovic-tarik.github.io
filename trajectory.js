@@ -347,8 +347,7 @@ function render(time) {
   const zoom = 1 + zoomProgress * 2.8;
   const zoomAnchorX = sun.x + (diagramCenterX - sun.x) * zoomProgress;
   const zoomAnchorY = sun.y + (diagramCenterY - sun.y) * zoomProgress;
-  const earthPlaneAngle = planeEarthStartAngle
-    + (-60.3 * Math.PI / 180 - planeEarthStartAngle) * orbitRotateProgress;
+  const earthPlaneAngle = planeEarthStartAngle;
   const localPlaneRadius = Math.max(28, scale * 0.043);
 
   const modeledEarthX = sun.x
@@ -456,7 +455,17 @@ function requestScrollUpdate() {
 
 function setPlaneFocus(active) {
   if (active) {
-    planeEarthStartAngle = Math.atan2(0.34 * Math.sin(orbitTheta), Math.cos(orbitTheta));
+    const currentPlaneAngle = Math.atan2(0.34 * Math.sin(orbitTheta), Math.cos(orbitTheta));
+    const tiltAngle = 60.3 * Math.PI / 180;
+    const positiveDistance = Math.abs(Math.atan2(
+      Math.sin(currentPlaneAngle - tiltAngle),
+      Math.cos(currentPlaneAngle - tiltAngle),
+    ));
+    const negativeDistance = Math.abs(Math.atan2(
+      Math.sin(currentPlaneAngle + tiltAngle),
+      Math.cos(currentPlaneAngle + tiltAngle),
+    ));
+    planeEarthStartAngle = positiveDistance < negativeDistance ? tiltAngle : -tiltAngle;
     planeViewRotation = Math.PI / 2 - (orbitTheta % (Math.PI * 2));
     while (planeViewRotation > Math.PI) planeViewRotation -= Math.PI * 2;
     while (planeViewRotation < -Math.PI) planeViewRotation += Math.PI * 2;
