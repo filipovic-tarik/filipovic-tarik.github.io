@@ -21,8 +21,7 @@ let sceneProgress = 0;
 let orbitTheta = Math.PI * 1.72;
 let planeFocusProgress = 0;
 let planeFocusTarget = 0;
-let planeSceneRotation = 0;
-let planeSunStartAngle = 0;
+let planeViewRotation = 0;
 let planeEarthStartAngle = 0;
 let planeFocusReady = false;
 
@@ -54,7 +53,7 @@ function resizeCanvas() {
   }));
 }
 
-function projectPoint(theta, phase, centerX, centerY, scale) {
+function projectPoint(theta, phase, centerX, centerY, scale, viewRotation = 0, planeCompression = 0.34) {
   const radius = scale * 0.36;
   const earthRadius = scale * 0.027;
   const tiltShift = earthRadius * 0.5;
@@ -67,19 +66,24 @@ function projectPoint(theta, phase, centerX, centerY, scale) {
     - tiltShift * Math.sin(phase) * Math.cos(theta);
   const z = drift * ((theta - Math.PI) / Math.PI) + verticalStretch * Math.sin(phase);
 
+  const rotatedX = x * Math.cos(viewRotation) - y * Math.sin(viewRotation);
+  const rotatedY = x * Math.sin(viewRotation) + y * Math.cos(viewRotation);
+
   return {
-    x: centerX + x,
-    y: centerY + y * 0.34 - z * 0.78,
+    x: centerX + rotatedX,
+    y: centerY + rotatedY * planeCompression - z * 0.78,
   };
 }
 
-function projectSun(theta, centerX, centerY, scale) {
+function projectSun(theta, centerX, centerY, scale, viewRotation = 0, planeCompression = 0.34) {
   const radius = scale * 0.36;
   const drift = scale * 0.09;
   const x = radius * Math.cos(theta);
   const y = radius * Math.sin(theta);
   const z = drift * ((theta - Math.PI) / Math.PI);
-  return { x: centerX + x, y: centerY + y * 0.34 - z * 0.78 };
+  const rotatedX = x * Math.cos(viewRotation) - y * Math.sin(viewRotation);
+  const rotatedY = x * Math.sin(viewRotation) + y * Math.cos(viewRotation);
+  return { x: centerX + rotatedX, y: centerY + rotatedY * planeCompression - z * 0.78 };
 }
 
 function drawStars(time) {
@@ -92,7 +96,7 @@ function drawStars(time) {
   }
 }
 
-function drawPath(centerX, centerY, scale, headTheta) {
+function drawPath(centerX, centerY, scale, headTheta, viewRotation = 0, planeCompression = 0.34) {
   const segments = 1300;
   const orbitSpan = Math.PI * 2;
   const tailTheta = headTheta - orbitSpan;
@@ -103,7 +107,7 @@ function drawPath(centerX, centerY, scale, headTheta) {
   for (let index = 0; index <= segments; index += 1) {
     const theta = tailTheta + (index / segments) * orbitSpan;
     const phase = theta * 28;
-    const point = projectPoint(theta, phase, centerX, centerY, scale);
+    const point = projectPoint(theta, phase, centerX, centerY, scale, viewRotation, planeCompression);
     if (index === 0) context.moveTo(point.x, point.y);
     else context.lineTo(point.x, point.y);
   }
@@ -114,7 +118,7 @@ function drawPath(centerX, centerY, scale, headTheta) {
   context.beginPath();
   for (let index = 0; index <= 260; index += 1) {
     const theta = tailTheta + (index / 260) * orbitSpan;
-    const point = projectSun(theta, centerX, centerY, scale);
+    const point = projectSun(theta, centerX, centerY, scale, viewRotation, planeCompression);
     if (index === 0) context.moveTo(point.x, point.y);
     else context.lineTo(point.x, point.y);
   }
@@ -169,11 +173,11 @@ function drawSagittariusA(point, scale, time) {
   drawBody(point, coreRadius, '#02040a', 'rgba(244,181,77,.72)');
 }
 
-function drawOrbitalPlane(radius, rotation, fill, stroke) {
+function drawOrbitalPlane(radiusX, radiusY, rotation, fill, stroke) {
   context.save();
   context.rotate(rotation);
   context.beginPath();
-  context.ellipse(0, 0, radius, radius * 0.31, 0, 0, Math.PI * 2);
+  context.ellipse(0, 0, radiusX, radiusY, 0, 0, Math.PI * 2);
   context.fillStyle = fill;
   context.fill();
   context.lineWidth = 1.2;
@@ -182,70 +186,88 @@ function drawOrbitalPlane(radius, rotation, fill, stroke) {
   context.restore();
 }
 
-function drawPlaneFocus(
-  centerX,
-  centerY,
-  radius,
-  sunPlaneAngle,
+function mixPlaneColor(target, progress, alpha) {
+  const channels = target.map((channel) => Math.round(255 + (channel - 255) * progress));
+  return `rgba(${channels[0]}, ${channels[1]}, ${channels[2]}, ${alpha})`;
+}
+
+function drawHighlightedPlanes(
+  galacticCenter,
+  sun,
+  galacticRadius,
+  galacticCompression,
+  earthRadius,
   earthPlaneAngle,
   opacity,
   colorProgress,
-  annotationProgress,
 ) {
-  const color = (target, alpha) => {
-    const channels = target.map((channel) => Math.round(255 + (channel - 255) * colorProgress));
-    return `rgba(${channels[0]}, ${channels[1]}, ${channels[2]}, ${alpha})`;
-  };
-  const sunPlaneStroke = color([244, 181, 77], 0.9);
-  const sunPlaneFill = color([244, 181, 77], 0.11);
-  const earthPlaneStroke = color([121, 174, 247], 0.9);
-  const earthPlaneFill = color([121, 174, 247], 0.11);
+  const sunPlaneStroke = mixPlaneColor([244, 181, 77], colorProgress, 0.92);
+  const sunPlaneFill = mixPlaneColor([244, 181, 77], colorProgress, 0.085);
+  const earthPlaneStroke = mixPlaneColor([121, 174, 247], colorProgress, 0.94);
+  const earthPlaneFill = mixPlaneColor([121, 174, 247], colorProgress, 0.13);
 
   context.save();
   context.globalAlpha = opacity;
-  context.translate(centerX, centerY);
-
+  context.translate(galacticCenter.x, galacticCenter.y);
   drawOrbitalPlane(
-    radius,
-    sunPlaneAngle,
+    galacticRadius,
+    Math.max(2, galacticRadius * galacticCompression),
+    0,
     sunPlaneFill,
     sunPlaneStroke,
   );
+  context.restore();
+
+  context.save();
+  context.globalAlpha = opacity;
+  context.translate(sun.x, sun.y);
   drawOrbitalPlane(
-    radius * 0.72,
+    earthRadius,
+    earthRadius * 0.31,
     earthPlaneAngle,
     earthPlaneFill,
     earthPlaneStroke,
   );
+  context.restore();
+}
+
+function drawPlaneAngleOverlay(
+  center,
+  radius,
+  earthPlaneAngle,
+  opacity,
+  colorProgress,
+) {
+  const sunPlaneStroke = mixPlaneColor([244, 181, 77], colorProgress, 0.94);
+  const earthPlaneStroke = mixPlaneColor([121, 174, 247], colorProgress, 0.94);
 
   context.save();
-  context.globalAlpha = annotationProgress;
+  context.globalAlpha = opacity;
+  context.translate(center.x, center.y);
   context.setLineDash([6, 6]);
   context.lineWidth = 1;
   context.strokeStyle = 'rgba(255,255,255,.68)';
   context.beginPath();
   context.moveTo(0, 0);
-  context.lineTo(radius * 0.62 * Math.cos(sunPlaneAngle), radius * 0.62 * Math.sin(sunPlaneAngle));
+  context.lineTo(radius * 0.7, 0);
   context.moveTo(0, 0);
-  context.lineTo(radius * 0.62 * Math.cos(earthPlaneAngle), radius * 0.62 * Math.sin(earthPlaneAngle));
+  context.lineTo(radius * 0.7 * Math.cos(earthPlaneAngle), radius * 0.7 * Math.sin(earthPlaneAngle));
   context.stroke();
   context.beginPath();
-  context.arc(0, 0, radius * 0.39, earthPlaneAngle, sunPlaneAngle);
+  context.arc(0, 0, radius * 0.43, earthPlaneAngle, 0);
   context.stroke();
-  context.restore();
 
-  context.globalAlpha = opacity * annotationProgress;
   context.fillStyle = 'rgba(255,255,255,.88)';
   context.font = '700 12px "Space Mono", monospace';
   context.textAlign = 'left';
-  context.fillText('60.3°', radius * 0.31, -radius * 0.19);
+  context.fillText('60.3°', radius * 0.35, -radius * 0.2);
 
   context.fillStyle = sunPlaneStroke;
   context.font = '600 10px "DM Sans", sans-serif';
   context.textAlign = 'left';
-  context.fillText('GALACTIC PLANE · SUN ORBIT', radius * 0.48, radius * 0.2);
+  context.fillText('SUN ORBITAL PLANE', radius * 0.54, radius * 0.24);
   context.fillStyle = earthPlaneStroke;
-  context.fillText('ECLIPTIC PLANE · EARTH ORBIT', -radius * 0.58, -radius * 0.53);
+  context.fillText('EARTH ORBITAL PLANE', -radius * 0.58, -radius * 0.56);
   context.restore();
 }
 
@@ -291,70 +313,87 @@ function render(time) {
   const phase = theta * 28;
   const headDrift = scale * 0.09 * ((theta - Math.PI) / Math.PI);
   const projectionCenterY = centerY + headDrift * 0.78;
-  const galacticCenter = { x: centerX, y: centerY };
-  const sun = projectSun(theta, centerX, projectionCenterY, scale);
-  const earth = projectPoint(theta, phase, centerX, projectionCenterY, scale);
-
-  const flashProgress = clamp(planeFocusProgress / 0.16);
-  const transformProgress = clamp((planeFocusProgress - 0.16) / 0.58);
-  const transformEase = transformProgress * transformProgress * (3 - 2 * transformProgress);
+  const smooth = (value) => value * value * (3 - 2 * value);
+  const flashProgress = smooth(clamp(planeFocusProgress / 0.14));
+  const levelProgress = smooth(clamp((planeFocusProgress - 0.14) / 0.2));
+  const orbitRotateProgress = smooth(clamp((planeFocusProgress - 0.34) / 0.24));
+  const zoomProgress = smooth(clamp((planeFocusProgress - 0.58) / 0.16));
   const colorProgressRaw = clamp((planeFocusProgress - 0.74) / 0.26);
-  const colorProgress = colorProgressRaw * colorProgressRaw * (3 - 2 * colorProgressRaw);
-  const annotationProgress = clamp((planeFocusProgress - 0.64) / 0.28);
-  const sceneFade = clamp((transformProgress - 0.7) / 0.3);
+  const colorProgress = smooth(colorProgressRaw);
+  const annotationProgress = smooth(clamp((planeFocusProgress - 0.7) / 0.24));
+  const viewRotation = planeViewRotation * orbitRotateProgress;
+  const planeCompression = 0.34 + (0.065 - 0.34) * levelProgress;
+  const galacticCenter = { x: centerX, y: centerY };
+  const sun = projectSun(
+    theta,
+    centerX,
+    projectionCenterY,
+    scale,
+    viewRotation,
+    planeCompression,
+  );
+  const earth = projectPoint(
+    theta,
+    phase,
+    centerX,
+    projectionCenterY,
+    scale,
+    viewRotation,
+    planeCompression,
+  );
+
   const diagramCenterX = width * (width <= 760 ? 0.5 : 0.64);
   const diagramCenterY = height * (width <= 760 ? 0.36 : 0.39);
-  const zoom = 1 + transformEase * 2.8;
-  const zoomAnchorX = sun.x + (diagramCenterX - sun.x) * transformEase;
-  const zoomAnchorY = sun.y + (diagramCenterY - sun.y) * transformEase;
-  const sceneRotation = planeSceneRotation * transformEase;
-  const earthOffsetX = earth.x - sun.x;
-  const earthOffsetY = earth.y - sun.y;
-  const rotatedEarthOffsetX = earthOffsetX * Math.cos(sceneRotation) - earthOffsetY * Math.sin(sceneRotation);
-  const rotatedEarthOffsetY = earthOffsetX * Math.sin(sceneRotation) + earthOffsetY * Math.cos(sceneRotation);
-  const zoomedEarthX = zoomAnchorX + rotatedEarthOffsetX * zoom;
-  const zoomedEarthY = zoomAnchorY + rotatedEarthOffsetY * zoom;
+  const zoom = 1 + zoomProgress * 2.8;
+  const zoomAnchorX = sun.x + (diagramCenterX - sun.x) * zoomProgress;
+  const zoomAnchorY = sun.y + (diagramCenterY - sun.y) * zoomProgress;
+  const earthPlaneAngle = planeEarthStartAngle
+    + (-60.3 * Math.PI / 180 - planeEarthStartAngle) * orbitRotateProgress;
+  const localPlaneRadius = Math.max(28, scale * 0.043);
+
+  const modeledEarthX = sun.x
+    + localPlaneRadius * Math.cos(phase) * Math.cos(earthPlaneAngle)
+    - localPlaneRadius * 0.31 * Math.sin(phase) * Math.sin(earthPlaneAngle);
+  const modeledEarthY = sun.y
+    + localPlaneRadius * Math.cos(phase) * Math.sin(earthPlaneAngle)
+    + localPlaneRadius * 0.31 * Math.sin(phase) * Math.cos(earthPlaneAngle);
+  const alignedEarthX = earth.x + (modeledEarthX - earth.x) * orbitRotateProgress;
+  const alignedEarthY = earth.y + (modeledEarthY - earth.y) * orbitRotateProgress;
 
   context.save();
-  context.globalAlpha = 1 - sceneFade;
+  context.globalAlpha = 1 - zoomProgress * 0.78;
   context.translate(zoomAnchorX, zoomAnchorY);
   context.scale(zoom, zoom);
-  context.rotate(sceneRotation);
   context.translate(-sun.x, -sun.y);
-  drawPath(centerX, projectionCenterY, scale, theta);
+  drawPath(
+    centerX,
+    projectionCenterY,
+    scale,
+    theta,
+    viewRotation,
+    planeCompression,
+  );
   drawSagittariusA(galacticCenter, scale, time);
   drawLabel(galacticCenter, 'Sagittarius A*', 42, -34);
-  context.restore();
-
-  const localPlaneRadius = Math.max(28, scale * 0.043);
-  const diagramRadius = Math.min(scale * 0.25, 205);
-  const planeRadius = localPlaneRadius + (diagramRadius - localPlaneRadius) * transformEase;
-  const targetEarthPlaneAngle = -60.3 * Math.PI / 180;
-  const sunPlaneAngle = planeSunStartAngle + sceneRotation;
-  const rotatedEarthPlaneAngle = planeEarthStartAngle + sceneRotation;
-  const earthPlaneAngle = rotatedEarthPlaneAngle
-    + (targetEarthPlaneAngle - rotatedEarthPlaneAngle) * transformEase;
 
   if (planeFocusProgress > 0) {
-    drawPlaneFocus(
-      zoomAnchorX,
-      zoomAnchorY,
-      planeRadius,
-      sunPlaneAngle,
+    drawHighlightedPlanes(
+      galacticCenter,
+      sun,
+      scale * 0.36,
+      planeCompression,
+      localPlaneRadius,
       earthPlaneAngle,
       flashProgress,
       colorProgress,
-      annotationProgress,
     );
   }
+  context.restore();
 
-  const targetEarthDistance = planeRadius * 0.54;
-  const targetEarthX = zoomAnchorX + targetEarthDistance * Math.cos(earthPlaneAngle);
-  const targetEarthY = zoomAnchorY + targetEarthDistance * Math.sin(earthPlaneAngle);
-  const sharedEarthX = zoomedEarthX + (targetEarthX - zoomedEarthX) * transformEase;
-  const sharedEarthY = zoomedEarthY + (targetEarthY - zoomedEarthY) * transformEase;
-  const sunRadius = Math.max(5, scale * 0.008) + (11 - Math.max(5, scale * 0.008)) * transformEase;
-  const earthRadius = Math.max(2.5, scale * 0.0038) + (5 - Math.max(2.5, scale * 0.0038)) * transformEase;
+  const sharedEarthX = zoomAnchorX + (alignedEarthX - sun.x) * zoom;
+  const sharedEarthY = zoomAnchorY + (alignedEarthY - sun.y) * zoom;
+  const sunRadius = Math.max(5, scale * 0.008) + (11 - Math.max(5, scale * 0.008)) * zoomProgress;
+  const earthRadius = Math.max(2.5, scale * 0.0038) + (5 - Math.max(2.5, scale * 0.0038)) * zoomProgress;
 
   const sharedSun = { x: zoomAnchorX, y: zoomAnchorY };
   const sharedEarth = { x: sharedEarthX, y: sharedEarthY };
@@ -362,6 +401,16 @@ function render(time) {
   drawBody(sharedEarth, earthRadius, '#b5dcff', 'rgba(181,220,255,.9)');
   drawLabel(sharedSun, 'Sun', -34, -24);
   drawLabel(sharedEarth, 'Earth', 32, 24);
+
+  if (annotationProgress > 0) {
+    drawPlaneAngleOverlay(
+      sharedSun,
+      Math.min(localPlaneRadius * zoom, 205),
+      earthPlaneAngle,
+      annotationProgress,
+      colorProgress,
+    );
+  }
 
   const readyNow = planeFocusTarget === 1 && planeFocusProgress >= 0.995;
   if (readyNow !== planeFocusReady) {
@@ -407,11 +456,10 @@ function requestScrollUpdate() {
 
 function setPlaneFocus(active) {
   if (active) {
-    const tangentX = -0.36 * Math.sin(orbitTheta);
-    const tangentY = 0.36 * 0.34 * Math.cos(orbitTheta) - (0.09 * 0.78 / Math.PI);
-    planeSunStartAngle = Math.atan2(tangentY, tangentX);
     planeEarthStartAngle = Math.atan2(0.34 * Math.sin(orbitTheta), Math.cos(orbitTheta));
-    planeSceneRotation = -planeSunStartAngle;
+    planeViewRotation = Math.PI / 2 - (orbitTheta % (Math.PI * 2));
+    while (planeViewRotation > Math.PI) planeViewRotation -= Math.PI * 2;
+    while (planeViewRotation < -Math.PI) planeViewRotation += Math.PI * 2;
   }
   planeFocusTarget = active ? 1 : 0;
   document.body.classList.toggle('plane-focus-active', active);
