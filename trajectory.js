@@ -13,6 +13,7 @@ const radiusFocusTrigger = document.querySelector('.radius-focus-trigger');
 const radiusFocusBack = document.querySelector('.radius-focus-back');
 const radiusFocusCopy = document.querySelector('.radius-focus-copy');
 const orbitCountTrigger = document.querySelector('.orbit-count-trigger');
+const viewTriggers = [planeFocusTrigger, radiusFocusTrigger, orbitCountTrigger];
 
 let width = 0;
 let height = 0;
@@ -433,7 +434,9 @@ function render(time) {
       orbitHighlightOpacity = 1 - (sequenceElapsed - 5000) / 300;
     } else {
       orbitCountSequenceActive = false;
-      orbitCountTrigger.disabled = false;
+      viewTriggers.forEach((trigger) => {
+        trigger.disabled = false;
+      });
     }
   }
 
@@ -679,7 +682,9 @@ function startOrbitCountSequence() {
   if (orbitCountSequenceActive) return;
   orbitCountSequenceActive = true;
   orbitCountSequenceStart = performance.now();
-  orbitCountTrigger.disabled = true;
+  viewTriggers.forEach((trigger) => {
+    trigger.disabled = true;
+  });
 }
 
 planeFocusTrigger.addEventListener('click', () => setPlaneFocus(true));
