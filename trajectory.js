@@ -12,6 +12,7 @@ const planeFocusCopy = document.querySelector('.orbital-plane-copy');
 const radiusFocusTrigger = document.querySelector('.radius-focus-trigger');
 const radiusFocusBack = document.querySelector('.radius-focus-back');
 const radiusFocusCopy = document.querySelector('.radius-focus-copy');
+const orbitCountTrigger = document.querySelector('.orbit-count-trigger');
 
 let width = 0;
 let height = 0;
@@ -31,6 +32,8 @@ let planeFocusReady = false;
 let radiusFocusProgress = 0;
 let radiusFocusTarget = 0;
 let radiusFocusReady = false;
+let orbitCountSequenceActive = false;
+let orbitCountSequenceStart = 0;
 
 function clamp(value, minimum = 0, maximum = 1) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -130,7 +133,7 @@ function drawPath(
   verticalProjection = 0.78,
 ) {
   const segments = 1300;
-  const orbitSpan = Math.PI * 2;
+  const orbitSpan = Math.PI * 2 * 1.2;
   const tailTheta = headTheta - orbitSpan;
   context.lineWidth = Math.max(0.7, scale / 900);
   context.strokeStyle = 'rgba(121, 174, 247, 0.48)';
@@ -172,6 +175,50 @@ function drawPath(
     else context.lineTo(point.x, point.y);
   }
   context.stroke();
+}
+
+function drawOrbitCountHighlight(
+  centerX,
+  centerY,
+  scale,
+  headTheta,
+  progress,
+  opacity,
+  viewRotation = 0,
+  planeCompression = 0.34,
+  verticalProjection = 0.78,
+) {
+  if (progress <= 0 || opacity <= 0) return;
+
+  const highlightedSpan = Math.PI * 2 * clamp(progress);
+  const startTheta = headTheta - highlightedSpan;
+  const segments = Math.max(16, Math.round(1080 * clamp(progress)));
+
+  context.save();
+  context.lineWidth = Math.max(1.25, scale / 720);
+  context.strokeStyle = `rgba(255,255,255,${opacity})`;
+  context.shadowColor = `rgba(255,255,255,${opacity * 0.6})`;
+  context.shadowBlur = 6;
+  context.beginPath();
+
+  for (let index = 0; index <= segments; index += 1) {
+    const theta = startTheta + (index / segments) * highlightedSpan;
+    const phase = theta * 28;
+    const point = projectPoint(
+      theta,
+      phase,
+      centerX,
+      centerY,
+      scale,
+      viewRotation,
+      planeCompression,
+      verticalProjection,
+    );
+    if (index === 0) context.moveTo(point.x, point.y);
+    else context.lineTo(point.x, point.y);
+  }
+  context.stroke();
+  context.restore();
 }
 
 function drawBody(point, radius, fill, glow) {
@@ -366,6 +413,30 @@ function render(time) {
 
   const frameDuration = Math.min(50, Math.max(0, time - lastRenderTime));
   lastRenderTime = time;
+  let orbitHighlightProgress = 0;
+  let orbitHighlightOpacity = 0;
+
+  if (orbitCountSequenceActive) {
+    const sequenceElapsed = time - orbitCountSequenceStart;
+    if (sequenceElapsed < 1000) {
+      orbitHighlightProgress = 0;
+    } else if (sequenceElapsed < 3000) {
+      orbitHighlightProgress = (sequenceElapsed - 1000) / 2000;
+      orbitHighlightOpacity = 0.96;
+    } else if (sequenceElapsed < 5000) {
+      orbitHighlightProgress = 1;
+      orbitHighlightOpacity = sequenceElapsed < 3600
+        ? 0.58 + Math.abs(Math.sin((sequenceElapsed - 3000) * 0.018)) * 0.42
+        : 1;
+    } else if (sequenceElapsed < 5300) {
+      orbitHighlightProgress = 1;
+      orbitHighlightOpacity = 1 - (sequenceElapsed - 5000) / 300;
+    } else {
+      orbitCountSequenceActive = false;
+      orbitCountTrigger.disabled = false;
+    }
+  }
+
   if (reducedMotion) {
     planeFocusProgress = planeFocusTarget;
     radiusFocusProgress = radiusFocusTarget;
@@ -391,6 +462,7 @@ function render(time) {
     && planeFocusProgress === 0
     && radiusFocusTarget === 0
     && radiusFocusProgress === 0
+    && !orbitCountSequenceActive
   ) {
     orbitTheta += frameDuration * 0.000025;
   }
@@ -466,6 +538,17 @@ function render(time) {
     projectionCenterY,
     scale,
     theta,
+    viewRotation,
+    planeCompression,
+    verticalProjection,
+  );
+  drawOrbitCountHighlight(
+    centerX,
+    projectionCenterY,
+    scale,
+    theta,
+    orbitHighlightProgress,
+    orbitHighlightOpacity,
     viewRotation,
     planeCompression,
     verticalProjection,
@@ -592,10 +675,18 @@ function setRadiusFocus(active) {
   }
 }
 
+function startOrbitCountSequence() {
+  if (orbitCountSequenceActive) return;
+  orbitCountSequenceActive = true;
+  orbitCountSequenceStart = performance.now();
+  orbitCountTrigger.disabled = true;
+}
+
 planeFocusTrigger.addEventListener('click', () => setPlaneFocus(true));
 planeFocusBack.addEventListener('click', () => setPlaneFocus(false));
 radiusFocusTrigger.addEventListener('click', () => setRadiusFocus(true));
 radiusFocusBack.addEventListener('click', () => setRadiusFocus(false));
+orbitCountTrigger.addEventListener('click', startOrbitCountSequence);
 window.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && planeFocusTarget === 1) setPlaneFocus(false);
   if (event.key === 'Escape' && radiusFocusTarget === 1) setRadiusFocus(false);

@@ -15,8 +15,8 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="trajectory.css?v=20261005-11" />
-    <script src="trajectory.js?v=20261005-14" defer></script>
+    <link rel="stylesheet" href="trajectory.css?v=20261006-1" />
+    <script src="trajectory.js?v=20261006-1" defer></script>
   </head>
   <body>
     <header class="trajectory-header">
@@ -67,7 +67,15 @@
                     </tr>
                     <tr><td>s</td><td>Ecliptic semi-major axis</td><td>1.49597888 × 10¹¹ m</td></tr>
                     <tr><td>k</td><td>Ecliptic tilt shift</td><td>7.410922 × 10¹⁰ m</td></tr>
-                    <tr><td>ω</td><td>Earth orbits per galactic revolution</td><td>240,000,000</td></tr>
+                    <tr class="interactive-parameter">
+                      <td>ω</td>
+                      <td>Earth orbits per galactic revolution</td>
+                      <td>
+                        <button class="parameter-view-trigger orbit-count-trigger" type="button" aria-label="View one Galactic revolution of Earth’s modeled path">
+                          240,000,000 <span>View</span>
+                        </button>
+                      </td>
+                    </tr>
                     <tr><td>a</td><td>Reference-frame translation</td><td>Adjustable</td></tr>
                     <tr><td>f</td><td>Vertical orbital stretch</td><td>1.299273 × 10¹¹ m</td></tr>
                     <tr class="interactive-parameter">

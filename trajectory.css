@@ -197,6 +197,7 @@ h1 {
 }
 .parameter-view-trigger:hover,
 .parameter-view-trigger:focus-visible { color: #fff; border-color: #fff; outline: none; }
+.parameter-view-trigger:disabled { opacity: .58; cursor: wait; }
 .model-meta {
   width: min(520px, 42vw);
   margin-top: 9px;
