@@ -237,14 +237,14 @@ function drawSagittariusTrail(point, scale) {
   const trailLength = scale * 0.22;
   const trailEndY = point.y + trailLength;
   const trailGradient = context.createLinearGradient(point.x, point.y, point.x, trailEndY);
-  trailGradient.addColorStop(0, 'rgba(239, 72, 72, 0.82)');
+  trailGradient.addColorStop(0, 'rgba(239, 72, 72, 0.38)');
   trailGradient.addColorStop(1, 'rgba(239, 72, 72, 0)');
 
   context.save();
   context.beginPath();
   context.moveTo(point.x, point.y);
   context.lineTo(point.x, trailEndY);
-  context.lineWidth = Math.max(0.65, scale / 1350);
+  context.lineWidth = Math.max(0.4, scale / 2200);
   context.strokeStyle = trailGradient;
   context.stroke();
   context.restore();
