@@ -235,23 +235,15 @@ function drawBody(point, radius, fill, glow) {
 
 function drawSagittariusTrail(point, scale) {
   const trailLength = scale * 0.22;
-  const trailEndX = point.x - trailLength;
-  const trailEndY = point.y + trailLength * 0.1;
-  const trailGradient = context.createLinearGradient(point.x, point.y, trailEndX, trailEndY);
+  const trailEndY = point.y + trailLength;
+  const trailGradient = context.createLinearGradient(point.x, point.y, point.x, trailEndY);
   trailGradient.addColorStop(0, 'rgba(239, 72, 72, 0.82)');
   trailGradient.addColorStop(1, 'rgba(239, 72, 72, 0)');
 
   context.save();
   context.beginPath();
   context.moveTo(point.x, point.y);
-  context.bezierCurveTo(
-    point.x - trailLength * 0.34,
-    point.y - trailLength * 0.025,
-    point.x - trailLength * 0.7,
-    point.y + trailLength * 0.14,
-    trailEndX,
-    trailEndY,
-  );
+  context.lineTo(point.x, trailEndY);
   context.lineWidth = Math.max(0.65, scale / 1350);
   context.strokeStyle = trailGradient;
   context.stroke();
