@@ -136,6 +136,10 @@ function drawPath(
   const segments = 1300;
   const orbitSpan = Math.PI * 2 * 1.2;
   const tailTheta = headTheta - orbitSpan;
+  context.save();
+  context.lineJoin = 'round';
+  context.lineCap = 'round';
+  context.miterLimit = 1;
   context.lineWidth = Math.max(0.7, scale / 900);
   context.strokeStyle = 'rgba(121, 174, 247, 0.48)';
   context.beginPath();
@@ -176,6 +180,7 @@ function drawPath(
     else context.lineTo(point.x, point.y);
   }
   context.stroke();
+  context.restore();
 }
 
 function drawOrbitCountHighlight(
@@ -196,6 +201,9 @@ function drawOrbitCountHighlight(
   const segments = Math.max(16, Math.round(1080 * clamp(progress)));
 
   context.save();
+  context.lineJoin = 'round';
+  context.lineCap = 'round';
+  context.miterLimit = 1;
   context.lineWidth = Math.max(1.25, scale / 720);
   context.strokeStyle = `rgba(255,255,255,${opacity})`;
   context.shadowColor = `rgba(255,255,255,${opacity * 0.6})`;
