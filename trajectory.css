@@ -65,6 +65,27 @@ a { color: inherit; }
   background: radial-gradient(circle at center, transparent 28%, rgba(3,7,17,.3) 70%, rgba(3,7,17,.82) 100%);
 }
 
+.model-context-note {
+  position: absolute;
+  top: 88px;
+  right: clamp(32px, 4vw, 72px);
+  z-index: 3;
+  width: min(470px, 42vw);
+  margin: 0;
+  color: rgba(255,255,255,.58);
+  font-size: .7rem;
+  line-height: 1.55;
+  text-align: right;
+  transition: opacity .38s ease;
+}
+.model-context-note a {
+  color: #a9ceff;
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+.model-context-note a:hover,
+.model-context-note a:focus-visible { color: #fff; outline: none; }
+
 .trajectory-content {
   position: relative;
   z-index: 2;
@@ -291,7 +312,10 @@ body.radius-focus-active .model-details,
 body.radius-focus-active .model-meta,
 body.apsis-focus-active .trajectory-heading,
 body.apsis-focus-active .model-details,
-body.apsis-focus-active .model-meta { opacity: 0 !important; pointer-events: none; }
+body.apsis-focus-active .model-meta,
+body.plane-focus-active .model-context-note,
+body.radius-focus-active .model-context-note,
+body.apsis-focus-active .model-context-note { opacity: 0 !important; pointer-events: none; }
 body.plane-focus-active.plane-focus-ready .orbital-plane-copy,
 body.radius-focus-active.radius-focus-ready .radius-focus-copy,
 body.apsis-focus-active.apsis-focus-ready .apsis-focus-copy {
@@ -345,7 +369,14 @@ body.apsis-focus-active.apsis-focus-ready .apsis-focus-copy {
   .trajectory-header { width: calc(100% - 36px); padding: 22px 0; }
   .trajectory-header span { display: none; }
   .space-hero { height: 260svh; }
-  .trajectory-content { width: min(100% - 30px, 620px); padding-top: 96px; }
+  .model-context-note {
+    top: 76px;
+    right: 18px;
+    width: calc(100% - 36px);
+    font-size: .62rem;
+    text-align: center;
+  }
+  .trajectory-content { width: min(100% - 30px, 620px); padding-top: 142px; }
   h1 { font-size: clamp(3.1rem, 15vw, 5.6rem); }
   .scroll-prompt { display: block; margin: 16px 0 0; font-size: .18em; vertical-align: baseline; }
   .model-details { width: 100%; gap: 12px; margin-top: 40px; }
