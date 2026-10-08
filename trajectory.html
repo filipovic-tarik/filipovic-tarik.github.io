@@ -15,8 +15,8 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="trajectory.css?v=20261006-1" />
-    <script src="trajectory.js?v=20261006-6" defer></script>
+    <link rel="stylesheet" href="trajectory.css?v=20261008-1" />
+    <script src="trajectory.js?v=20261008-1" defer></script>
   </head>
   <body>
     <header class="trajectory-header">
@@ -66,6 +66,16 @@
                       </td>
                     </tr>
                     <tr><td>s</td><td>Ecliptic semi-major axis</td><td>1.49597888 × 10¹¹ m</td></tr>
+                    <tr class="interactive-parameter">
+                      <td>↔</td>
+                      <td>Periapsis / apoapsis</td>
+                      <td>
+                        <button class="parameter-view-trigger apsis-focus-trigger" type="button" aria-controls="apsis-focus-copy">
+                          <span class="apsis-values">1.47098074 / 1.52097701 × 10¹¹ m</span>
+                          <span>View</span>
+                        </button>
+                      </td>
+                    </tr>
                     <tr><td>k</td><td>Ecliptic tilt shift</td><td>7.410922 × 10¹⁰ m</td></tr>
                     <tr class="interactive-parameter">
                       <td>ω</td>
@@ -125,6 +135,17 @@
               current position. In the model, this distance is approximately 2.5 × 10²⁰ meters.
             </p>
             <button class="plane-focus-back radius-focus-back" type="button">← Back to the full path</button>
+          </aside>
+
+          <aside class="plane-focus-copy apsis-focus-copy" id="apsis-focus-copy" aria-hidden="true">
+            <p class="plane-focus-kicker">Earth’s orbital extremes</p>
+            <h2>Periapsis and apoapsis</h2>
+            <p>
+              Periapsis is Earth’s nearest point to the Sun, at 1.47098074 × 10¹¹ meters.
+              Apoapsis is its farthest point, at 1.52097701 × 10¹¹ meters. The small difference
+              between them gives Earth’s orbit its slight eccentricity.
+            </p>
+            <button class="plane-focus-back apsis-focus-back" type="button">← Back to the full path</button>
           </aside>
         </div>
       </section>

@@ -13,7 +13,13 @@ const radiusFocusTrigger = document.querySelector('.radius-focus-trigger');
 const radiusFocusBack = document.querySelector('.radius-focus-back');
 const radiusFocusCopy = document.querySelector('.radius-focus-copy');
 const orbitCountTrigger = document.querySelector('.orbit-count-trigger');
-const viewTriggers = [planeFocusTrigger, radiusFocusTrigger, orbitCountTrigger];
+const apsisFocusTrigger = document.querySelector('.apsis-focus-trigger');
+const apsisFocusBack = document.querySelector('.apsis-focus-back');
+const apsisFocusCopy = document.querySelector('.apsis-focus-copy');
+const viewTriggers = [planeFocusTrigger, radiusFocusTrigger, orbitCountTrigger, apsisFocusTrigger];
+
+const EARTH_ORBIT_ECCENTRICITY = 0.01671123;
+const EARTH_ORBIT_MINOR_RATIO = Math.sqrt(1 - EARTH_ORBIT_ECCENTRICITY ** 2);
 
 let width = 0;
 let height = 0;
@@ -33,6 +39,9 @@ let planeFocusReady = false;
 let radiusFocusProgress = 0;
 let radiusFocusTarget = 0;
 let radiusFocusReady = false;
+let apsisFocusProgress = 0;
+let apsisFocusTarget = 0;
+let apsisFocusReady = false;
 let orbitCountSequenceActive = false;
 let orbitCountSequenceStart = 0;
 
@@ -433,6 +442,107 @@ function drawGalacticRadius(center, sun, progress) {
   }
 }
 
+function drawApsisView(sun, phase, localRadius, earthPlaneAngle, progress, labelProgress) {
+  if (progress <= 0) return;
+
+  const targetX = width * 0.5;
+  const targetY = height * (width <= 760 ? 0.34 : 0.38);
+  const center = {
+    x: sun.x + (targetX - sun.x) * progress,
+    y: sun.y + (targetY - sun.y) * progress,
+  };
+  const finalMajorRadius = Math.min(width * (width <= 760 ? 0.37 : 0.28), height * 0.22, 250);
+  const majorRadius = localRadius + (finalMajorRadius - localRadius) * progress;
+  const minorRatio = 0.31 + (EARTH_ORBIT_MINOR_RATIO - 0.31) * progress;
+  const minorRadius = majorRadius * minorRatio;
+  const rotation = earthPlaneAngle * (1 - progress);
+  const focusOffset = majorRadius * EARTH_ORBIT_ECCENTRICITY * progress;
+  const cosine = Math.cos(rotation);
+  const sine = Math.sin(rotation);
+
+  const transformLocalPoint = (x, y) => ({
+    x: center.x + x * cosine - y * sine,
+    y: center.y + x * sine + y * cosine,
+  });
+
+  const periapsis = transformLocalPoint(focusOffset - majorRadius, 0);
+  const apoapsis = transformLocalPoint(focusOffset + majorRadius, 0);
+  const earth = transformLocalPoint(
+    focusOffset + majorRadius * Math.cos(phase),
+    minorRadius * Math.sin(phase),
+  );
+
+  context.save();
+  context.globalAlpha = progress;
+  context.translate(center.x, center.y);
+  context.rotate(rotation);
+  context.lineWidth = 1.35;
+  context.strokeStyle = 'rgba(121,174,247,.82)';
+  context.shadowColor = 'rgba(121,174,247,.3)';
+  context.shadowBlur = 8;
+  context.beginPath();
+  context.ellipse(focusOffset, 0, majorRadius, minorRadius, 0, 0, Math.PI * 2);
+  context.stroke();
+
+  if (labelProgress > 0) {
+    context.globalAlpha = labelProgress * 0.72;
+    context.setLineDash([5, 6]);
+    context.lineWidth = 0.9;
+    context.shadowBlur = 0;
+    context.beginPath();
+    context.moveTo(0, 0);
+    context.lineTo(focusOffset - majorRadius, 0);
+    context.moveTo(0, 0);
+    context.lineTo(focusOffset + majorRadius, 0);
+    context.strokeStyle = 'rgba(255,255,255,.58)';
+    context.stroke();
+  }
+  context.restore();
+
+  const sunRadius = 11 + 3 * progress;
+  const earthRadius = 4 + 1.5 * progress;
+  context.save();
+  context.globalAlpha = progress;
+  drawBody(center, sunRadius, '#f4b54d', 'rgba(244,181,77,.9)');
+  drawBody(earth, earthRadius, '#b5dcff', 'rgba(181,220,255,.9)');
+  context.restore();
+
+  if (labelProgress <= 0) return;
+
+  context.save();
+  context.globalAlpha = labelProgress;
+  drawBody(periapsis, 5.5, '#ff7067', 'rgba(255,112,103,.75)');
+  drawBody(apoapsis, 5.5, '#79aef7', 'rgba(121,174,247,.75)');
+  context.restore();
+
+  context.save();
+  context.globalAlpha = labelProgress;
+  context.font = '700 10px "DM Sans", sans-serif';
+  context.textBaseline = 'middle';
+  const compactLabels = width <= 760;
+  context.textAlign = compactLabels ? 'left' : 'right';
+  context.fillStyle = '#ff7067';
+  context.fillText('PERIAPSIS', periapsis.x + (compactLabels ? 12 : -12), periapsis.y - 8);
+  context.font = '400 9px "Space Mono", monospace';
+  context.fillStyle = 'rgba(255,255,255,.74)';
+  context.fillText('1.47098074 × 10¹¹ m', periapsis.x + (compactLabels ? 12 : -12), periapsis.y + 9);
+
+  context.font = '700 10px "DM Sans", sans-serif';
+  context.textAlign = compactLabels ? 'right' : 'left';
+  context.fillStyle = '#79aef7';
+  context.fillText('APOAPSIS', apoapsis.x + (compactLabels ? -12 : 12), apoapsis.y - 8);
+  context.font = '400 9px "Space Mono", monospace';
+  context.fillStyle = 'rgba(255,255,255,.74)';
+  context.fillText('1.52097701 × 10¹¹ m', apoapsis.x + (compactLabels ? -12 : 12), apoapsis.y + 9);
+
+  context.font = '600 10px "DM Sans", sans-serif';
+  context.textAlign = 'center';
+  context.fillStyle = 'rgba(255,255,255,.72)';
+  context.fillText('SUN', center.x, center.y + sunRadius + 15);
+  context.fillText('EARTH · CURRENT POSITION', earth.x, earth.y - earthRadius - 14);
+  context.restore();
+}
+
 function render(time) {
   context.clearRect(0, 0, width, height);
   drawStars(time);
@@ -468,6 +578,7 @@ function render(time) {
   if (reducedMotion) {
     planeFocusProgress = planeFocusTarget;
     radiusFocusProgress = radiusFocusTarget;
+    apsisFocusProgress = apsisFocusTarget;
   } else if (planeFocusProgress !== planeFocusTarget) {
     const direction = Math.sign(planeFocusTarget - planeFocusProgress);
     const transitionDuration = planeFocusTarget === 1 ? 1800 : 650;
@@ -484,12 +595,22 @@ function render(time) {
       radiusFocusProgress = radiusFocusTarget;
     }
   }
+  if (!reducedMotion && apsisFocusProgress !== apsisFocusTarget) {
+    const direction = Math.sign(apsisFocusTarget - apsisFocusProgress);
+    const transitionDuration = apsisFocusTarget === 1 ? 1650 : 650;
+    apsisFocusProgress = clamp(apsisFocusProgress + direction * frameDuration / transitionDuration);
+    if (Math.abs(apsisFocusTarget - apsisFocusProgress) < 0.002) {
+      apsisFocusProgress = apsisFocusTarget;
+    }
+  }
   if (
     !reducedMotion
     && planeFocusTarget === 0
     && planeFocusProgress === 0
     && radiusFocusTarget === 0
     && radiusFocusProgress === 0
+    && apsisFocusTarget === 0
+    && apsisFocusProgress === 0
     && !orbitCountSequenceActive
   ) {
     orbitTheta += frameDuration * 0.000025;
@@ -511,6 +632,8 @@ function render(time) {
   const annotationProgress = smooth(clamp((planeFocusProgress - 0.7) / 0.24));
   const radiusBirdProgress = smooth(clamp((radiusFocusProgress - 0.12) / 0.62));
   const radiusLineProgress = smooth(clamp((radiusFocusProgress - 0.68) / 0.26));
+  const apsisViewProgress = smooth(clamp(apsisFocusProgress / 0.82));
+  const apsisLabelProgress = smooth(clamp((apsisFocusProgress - 0.58) / 0.34));
   const viewRotation = planeViewRotation * orbitRotateProgress;
   const planeFocusCompression = 0.34 + (0.065 - 0.34) * levelProgress;
   const planeCompression = planeFocusCompression
@@ -545,6 +668,10 @@ function render(time) {
   const zoomAnchorY = sun.y + (diagramCenterY - sun.y) * zoomProgress;
   const earthPlaneAngle = planeEarthStartAngle
     + (planeEarthTargetAngle - planeEarthStartAngle) * orbitRotateProgress;
+  const apsisStartAngle = Math.atan2(
+    Math.sin(theta) * planeCompression,
+    Math.cos(theta),
+  );
   const localPlaneRadius = Math.max(28, scale * 0.043);
 
   const modeledEarthX = sun.x
@@ -555,9 +682,10 @@ function render(time) {
     + localPlaneRadius * 0.31 * Math.sin(phase) * Math.cos(earthPlaneAngle);
   const alignedEarthX = earth.x + (modeledEarthX - earth.x) * orbitRotateProgress;
   const alignedEarthY = earth.y + (modeledEarthY - earth.y) * orbitRotateProgress;
+  const baseSceneOpacity = 1 - apsisViewProgress * 0.94;
 
   context.save();
-  context.globalAlpha = 1 - zoomProgress * 0.78;
+  context.globalAlpha = (1 - zoomProgress * 0.78) * baseSceneOpacity;
   context.translate(zoomAnchorX, zoomAnchorY);
   context.scale(zoom, zoom);
   context.translate(-sun.x, -sun.y);
@@ -600,7 +728,10 @@ function render(time) {
   context.restore();
 
   if (radiusLineProgress > 0) {
+    context.save();
+    context.globalAlpha = baseSceneOpacity;
     drawGalacticRadius(galacticCenter, sun, radiusLineProgress);
+    context.restore();
   }
 
   const sharedEarthX = zoomAnchorX + (alignedEarthX - sun.x) * zoom;
@@ -610,6 +741,8 @@ function render(time) {
 
   const sharedSun = { x: zoomAnchorX, y: zoomAnchorY };
   const sharedEarth = { x: sharedEarthX, y: sharedEarthY };
+  context.save();
+  context.globalAlpha = baseSceneOpacity;
   drawBody(sharedSun, sunRadius, '#f4b54d', 'rgba(244,181,77,.85)');
   drawBody(sharedEarth, earthRadius, '#b5dcff', 'rgba(181,220,255,.9)');
   drawLabel(sharedSun, 'Sun', -34, -24);
@@ -624,6 +757,16 @@ function render(time) {
       colorProgress,
     );
   }
+  context.restore();
+
+  drawApsisView(
+    sun,
+    phase,
+    localPlaneRadius,
+    apsisStartAngle,
+    apsisViewProgress,
+    apsisLabelProgress,
+  );
 
   const readyNow = planeFocusTarget === 1 && planeFocusProgress >= 0.995;
   if (readyNow !== planeFocusReady) {
@@ -639,6 +782,14 @@ function render(time) {
     document.body.classList.toggle('radius-focus-ready', radiusReadyNow);
     radiusFocusCopy.setAttribute('aria-hidden', String(!radiusReadyNow));
     if (radiusReadyNow) radiusFocusBack.focus({ preventScroll: true });
+  }
+
+  const apsisReadyNow = apsisFocusTarget === 1 && apsisFocusProgress >= 0.995;
+  if (apsisReadyNow !== apsisFocusReady) {
+    apsisFocusReady = apsisReadyNow;
+    document.body.classList.toggle('apsis-focus-ready', apsisReadyNow);
+    apsisFocusCopy.setAttribute('aria-hidden', String(!apsisReadyNow));
+    if (apsisReadyNow) apsisFocusBack.focus({ preventScroll: true });
   }
 
   if (!reducedMotion) requestAnimationFrame(render);
@@ -659,7 +810,7 @@ function updateScrollScene() {
   const contentWidth = modelDetails.parentElement.getBoundingClientRect().width;
   const detailsWidth = modelDetails.getBoundingClientRect().width;
   const horizontalShift = compactView ? 0 : (1 - dataReveal) * Math.max(0, (contentWidth - detailsWidth) / 2);
-  const verticalShift = compactView ? -170 * progress : -225 * progress;
+  const verticalShift = compactView ? -190 * progress : -255 * progress;
   modelDetails.style.transform = `translate3d(${horizontalShift}px, ${verticalShift}px, 0)`;
   modelMeta.style.transform = `translate3d(${horizontalShift}px, ${verticalShift}px, 0)`;
 
@@ -704,6 +855,17 @@ function setRadiusFocus(active) {
   }
 }
 
+function setApsisFocus(active) {
+  apsisFocusTarget = active ? 1 : 0;
+  document.body.classList.toggle('apsis-focus-active', active);
+  if (!active) {
+    apsisFocusReady = false;
+    document.body.classList.remove('apsis-focus-ready');
+    apsisFocusCopy.setAttribute('aria-hidden', 'true');
+    apsisFocusTrigger.focus({ preventScroll: true });
+  }
+}
+
 function startOrbitCountSequence() {
   if (orbitCountSequenceActive) return;
   orbitCountSequenceActive = true;
@@ -717,10 +879,13 @@ planeFocusTrigger.addEventListener('click', () => setPlaneFocus(true));
 planeFocusBack.addEventListener('click', () => setPlaneFocus(false));
 radiusFocusTrigger.addEventListener('click', () => setRadiusFocus(true));
 radiusFocusBack.addEventListener('click', () => setRadiusFocus(false));
+apsisFocusTrigger.addEventListener('click', () => setApsisFocus(true));
+apsisFocusBack.addEventListener('click', () => setApsisFocus(false));
 orbitCountTrigger.addEventListener('click', startOrbitCountSequence);
 window.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && planeFocusTarget === 1) setPlaneFocus(false);
   if (event.key === 'Escape' && radiusFocusTarget === 1) setRadiusFocus(false);
+  if (event.key === 'Escape' && apsisFocusTarget === 1) setApsisFocus(false);
 });
 
 window.addEventListener('resize', () => {

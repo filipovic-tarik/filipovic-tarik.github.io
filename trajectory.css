@@ -195,6 +195,13 @@ h1 {
   letter-spacing: .08em;
   text-transform: uppercase;
 }
+.parameter-view-trigger .apsis-values {
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.apsis-focus-trigger { white-space: normal; text-align: left; }
 .parameter-view-trigger:hover,
 .parameter-view-trigger:focus-visible { color: #fff; border-color: #fff; outline: none; }
 .parameter-view-trigger:disabled { opacity: .58; cursor: wait; }
@@ -281,9 +288,13 @@ body.plane-focus-active .model-details,
 body.plane-focus-active .model-meta,
 body.radius-focus-active .trajectory-heading,
 body.radius-focus-active .model-details,
-body.radius-focus-active .model-meta { opacity: 0 !important; pointer-events: none; }
+body.radius-focus-active .model-meta,
+body.apsis-focus-active .trajectory-heading,
+body.apsis-focus-active .model-details,
+body.apsis-focus-active .model-meta { opacity: 0 !important; pointer-events: none; }
 body.plane-focus-active.plane-focus-ready .orbital-plane-copy,
-body.radius-focus-active.radius-focus-ready .radius-focus-copy {
+body.radius-focus-active.radius-focus-ready .radius-focus-copy,
+body.apsis-focus-active.apsis-focus-ready .apsis-focus-copy {
   opacity: 1;
   pointer-events: auto;
   transform: translate(-50%, 0);
