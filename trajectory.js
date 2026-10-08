@@ -23,7 +23,6 @@ const EARTH_ORBIT_MINOR_RATIO = Math.sqrt(1 - EARTH_ORBIT_ECCENTRICITY ** 2);
 const EARTH_ORBIT_TILT = 29.7 * Math.PI / 180;
 const EARTH_ORBIT_TILT_SIN = Math.sin(EARTH_ORBIT_TILT);
 const EARTH_ORBIT_TILT_COS = Math.cos(EARTH_ORBIT_TILT);
-const APSIS_FACE_ON_VERTICAL_PROJECTION = (1 - EARTH_ORBIT_TILT_SIN) / EARTH_ORBIT_TILT_COS;
 
 let width = 0;
 let height = 0;
@@ -46,7 +45,6 @@ let radiusFocusReady = false;
 let apsisFocusProgress = 0;
 let apsisFocusTarget = 0;
 let apsisFocusReady = false;
-let apsisViewRotation = 0;
 let orbitCountSequenceActive = false;
 let orbitCountSequenceStart = 0;
 
@@ -57,6 +55,32 @@ function clamp(value, minimum = 0, maximum = 1) {
 function seededRandom(seed) {
   const value = Math.sin(seed * 12.9898) * 43758.5453;
   return value - Math.floor(value);
+}
+
+function projectVector(
+  x,
+  y,
+  z,
+  viewRotation,
+  planeCompression,
+  verticalProjection,
+  apsisViewTheta = 0,
+  apsisCameraProgress = 0,
+) {
+  const rotatedX = x * Math.cos(viewRotation) - y * Math.sin(viewRotation);
+  const rotatedY = x * Math.sin(viewRotation) + y * Math.cos(viewRotation);
+  const baseX = rotatedX;
+  const baseY = rotatedY * planeCompression - z * verticalProjection;
+
+  const faceOnX = x * Math.cos(apsisViewTheta) + y * Math.sin(apsisViewTheta);
+  const faceOnY = -x * EARTH_ORBIT_TILT_SIN * Math.sin(apsisViewTheta)
+    + y * EARTH_ORBIT_TILT_SIN * Math.cos(apsisViewTheta)
+    - z * EARTH_ORBIT_TILT_COS;
+
+  return {
+    x: baseX + (faceOnX - baseX) * apsisCameraProgress,
+    y: baseY + (faceOnY - baseY) * apsisCameraProgress,
+  };
 }
 
 function resizeCanvas() {
@@ -87,6 +111,8 @@ function projectPoint(
   viewRotation = 0,
   planeCompression = 0.34,
   verticalProjection = 0.78,
+  apsisViewTheta = 0,
+  apsisCameraProgress = 0,
 ) {
   const radius = scale * 0.36;
   const earthRadius = scale * 0.027;
@@ -100,12 +126,20 @@ function projectPoint(
     - tiltShift * Math.sin(phase) * Math.cos(theta);
   const z = drift * ((theta - Math.PI) / Math.PI) + verticalStretch * Math.sin(phase);
 
-  const rotatedX = x * Math.cos(viewRotation) - y * Math.sin(viewRotation);
-  const rotatedY = x * Math.sin(viewRotation) + y * Math.cos(viewRotation);
+  const projected = projectVector(
+    x,
+    y,
+    z,
+    viewRotation,
+    planeCompression,
+    verticalProjection,
+    apsisViewTheta,
+    apsisCameraProgress,
+  );
 
   return {
-    x: centerX + rotatedX,
-    y: centerY + rotatedY * planeCompression - z * verticalProjection,
+    x: centerX + projected.x,
+    y: centerY + projected.y,
   };
 }
 
@@ -117,15 +151,25 @@ function projectSun(
   viewRotation = 0,
   planeCompression = 0.34,
   verticalProjection = 0.78,
+  apsisViewTheta = 0,
+  apsisCameraProgress = 0,
 ) {
   const radius = scale * 0.36;
   const drift = scale * 0.09;
   const x = radius * Math.cos(theta);
   const y = radius * Math.sin(theta);
   const z = drift * ((theta - Math.PI) / Math.PI);
-  const rotatedX = x * Math.cos(viewRotation) - y * Math.sin(viewRotation);
-  const rotatedY = x * Math.sin(viewRotation) + y * Math.cos(viewRotation);
-  return { x: centerX + rotatedX, y: centerY + rotatedY * planeCompression - z * verticalProjection };
+  const projected = projectVector(
+    x,
+    y,
+    z,
+    viewRotation,
+    planeCompression,
+    verticalProjection,
+    apsisViewTheta,
+    apsisCameraProgress,
+  );
+  return { x: centerX + projected.x, y: centerY + projected.y };
 }
 
 function drawStars(time) {
@@ -146,6 +190,8 @@ function drawPath(
   viewRotation = 0,
   planeCompression = 0.34,
   verticalProjection = 0.78,
+  apsisViewTheta = 0,
+  apsisCameraProgress = 0,
 ) {
   const segments = 1300;
   const orbitSpan = Math.PI * 2 * 1.2;
@@ -170,6 +216,8 @@ function drawPath(
       viewRotation,
       planeCompression,
       verticalProjection,
+      apsisViewTheta,
+      apsisCameraProgress,
     );
     if (index === 0) context.moveTo(point.x, point.y);
     else context.lineTo(point.x, point.y);
@@ -189,6 +237,8 @@ function drawPath(
       viewRotation,
       planeCompression,
       verticalProjection,
+      apsisViewTheta,
+      apsisCameraProgress,
     );
     if (index === 0) context.moveTo(point.x, point.y);
     else context.lineTo(point.x, point.y);
@@ -207,6 +257,8 @@ function drawOrbitCountHighlight(
   viewRotation = 0,
   planeCompression = 0.34,
   verticalProjection = 0.78,
+  apsisViewTheta = 0,
+  apsisCameraProgress = 0,
 ) {
   if (progress <= 0 || opacity <= 0) return;
 
@@ -236,6 +288,8 @@ function drawOrbitCountHighlight(
       viewRotation,
       planeCompression,
       verticalProjection,
+      apsisViewTheta,
+      apsisCameraProgress,
     );
     if (index === 0) context.moveTo(point.x, point.y);
     else context.lineTo(point.x, point.y);
@@ -455,6 +509,8 @@ function projectApsisOrbitPoint(
   viewRotation,
   planeCompression,
   verticalProjection,
+  apsisViewTheta,
+  apsisCameraProgress,
 ) {
   const majorRadius = scale * 0.027;
   const minorRadius = majorRadius * EARTH_ORBIT_MINOR_RATIO;
@@ -465,12 +521,20 @@ function projectApsisOrbitPoint(
   const localY = radialDistance * Math.sin(theta)
     - tiltedDistance * EARTH_ORBIT_TILT_SIN * Math.cos(theta);
   const localZ = tiltedDistance * EARTH_ORBIT_TILT_COS;
-  const rotatedX = localX * Math.cos(viewRotation) - localY * Math.sin(viewRotation);
-  const rotatedY = localX * Math.sin(viewRotation) + localY * Math.cos(viewRotation);
+  const projected = projectVector(
+    localX,
+    localY,
+    localZ,
+    viewRotation,
+    planeCompression,
+    verticalProjection,
+    apsisViewTheta,
+    apsisCameraProgress,
+  );
 
   return {
-    x: sun.x + rotatedX,
-    y: sun.y + rotatedY * planeCompression - localZ * verticalProjection,
+    x: sun.x + projected.x,
+    y: sun.y + projected.y,
   };
 }
 
@@ -482,6 +546,8 @@ function drawApsisFocusOverlay(
   viewRotation,
   planeCompression,
   verticalProjection,
+  apsisViewTheta,
+  apsisCameraProgress,
   cameraAnchor,
   cameraZoom,
   orbitOpacity,
@@ -501,6 +567,8 @@ function drawApsisFocusOverlay(
     viewRotation,
     planeCompression,
     verticalProjection,
+    apsisViewTheta,
+    apsisCameraProgress,
   ));
 
   context.save();
@@ -666,16 +734,11 @@ function render(time) {
   const apsisZoomProgress = smooth(clamp((apsisFocusProgress - 0.46) / 0.36));
   const apsisOverlayProgress = smooth(clamp((apsisFocusProgress - 0.58) / 0.24));
   const apsisLabelProgress = smooth(clamp((apsisFocusProgress - 0.76) / 0.18));
-  const viewRotation = planeViewRotation * orbitRotateProgress
-    + apsisViewRotation * apsisRotateProgress;
+  const viewRotation = planeViewRotation * orbitRotateProgress;
   const planeFocusCompression = 0.34 + (0.065 - 0.34) * levelProgress;
-  const basePlaneCompression = planeFocusCompression
+  const planeCompression = planeFocusCompression
     + (1 - planeFocusCompression) * radiusBirdProgress;
-  const planeCompression = basePlaneCompression
-    + (1 - basePlaneCompression) * apsisRotateProgress;
-  const baseVerticalProjection = 0.78 * (1 - radiusBirdProgress);
-  const verticalProjection = baseVerticalProjection
-    + (APSIS_FACE_ON_VERTICAL_PROJECTION - baseVerticalProjection) * apsisRotateProgress;
+  const verticalProjection = 0.78 * (1 - radiusBirdProgress);
   const projectionCenterY = centerY + headDrift * verticalProjection;
   const galacticCenter = { x: centerX, y: centerY };
   const sun = projectSun(
@@ -686,6 +749,8 @@ function render(time) {
     viewRotation,
     planeCompression,
     verticalProjection,
+    theta,
+    apsisRotateProgress,
   );
   const earth = projectPoint(
     theta,
@@ -696,6 +761,8 @@ function render(time) {
     viewRotation,
     planeCompression,
     verticalProjection,
+    theta,
+    apsisRotateProgress,
   );
 
   const diagramCenterX = width * (width <= 760 ? 0.5 : 0.64);
@@ -729,6 +796,8 @@ function render(time) {
     viewRotation,
     planeCompression,
     verticalProjection,
+    theta,
+    apsisRotateProgress,
   );
   const focusedEarthX = alignedEarthX + (apsisEarth.x - alignedEarthX) * apsisOverlayProgress;
   const focusedEarthY = alignedEarthY + (apsisEarth.y - alignedEarthY) * apsisOverlayProgress;
@@ -745,6 +814,8 @@ function render(time) {
     viewRotation,
     planeCompression,
     verticalProjection,
+    theta,
+    apsisRotateProgress,
   );
   drawOrbitCountHighlight(
     centerX,
@@ -799,6 +870,8 @@ function render(time) {
     viewRotation,
     planeCompression,
     verticalProjection,
+    theta,
+    apsisRotateProgress,
     sharedSun,
     cameraZoom,
     apsisOverlayProgress,
@@ -911,11 +984,6 @@ function setRadiusFocus(active) {
 }
 
 function setApsisFocus(active) {
-  if (active) {
-    apsisViewRotation = -(orbitTheta % (Math.PI * 2));
-    while (apsisViewRotation > Math.PI) apsisViewRotation -= Math.PI * 2;
-    while (apsisViewRotation < -Math.PI) apsisViewRotation += Math.PI * 2;
-  }
   apsisFocusTarget = active ? 1 : 0;
   document.body.classList.toggle('apsis-focus-active', active);
   if (!active) {
