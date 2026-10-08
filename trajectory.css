@@ -72,14 +72,14 @@ a { color: inherit; }
   z-index: 3;
   width: min(470px, 42vw);
   margin: 0;
-  color: rgba(255,255,255,.58);
+  color: rgba(255,255,255,.44);
   font-size: .7rem;
   line-height: 1.55;
   text-align: right;
   transition: opacity .38s ease;
 }
 .model-context-note a {
-  color: #a9ceff;
+  color: rgba(169,206,255,.72);
   font-weight: 600;
   text-underline-offset: 3px;
 }
