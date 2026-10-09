@@ -3,6 +3,7 @@ const context = canvas.getContext('2d');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const scrollStage = document.querySelector('.space-hero');
 const trajectoryHeading = document.querySelector('.trajectory-heading');
+const modelContextNote = document.querySelector('.model-context-note');
 const modelDetails = document.querySelector('.model-details');
 const parameterPanel = document.querySelector('.parameter-panel');
 const modelMeta = document.querySelector('.model-meta');
@@ -929,11 +930,15 @@ function updateScrollScene() {
   const progress = clamp(-bounds.top / scrollRange);
   const titleFade = clamp(progress / 0.34);
   const dataReveal = reducedMotion ? (progress > 0.18 ? 1 : 0) : clamp((progress - 0.18) / 0.48);
+  const noteReveal = reducedMotion ? (progress > 0.36 ? 1 : 0) : clamp((progress - 0.36) / 0.14);
   const compactView = window.innerWidth <= 760;
   sceneProgress = dataReveal;
 
   trajectoryHeading.style.opacity = String(1 - titleFade);
   trajectoryHeading.style.transform = `translate3d(0, ${-220 * progress}px, 0)`;
+  modelContextNote.style.opacity = String(noteReveal);
+  modelContextNote.style.transform = `translate3d(0, ${-8 * (1 - noteReveal)}px, 0)`;
+  modelContextNote.style.pointerEvents = noteReveal > 0.9 ? 'auto' : 'none';
 
   const contentWidth = modelDetails.parentElement.getBoundingClientRect().width;
   const detailsWidth = modelDetails.getBoundingClientRect().width;

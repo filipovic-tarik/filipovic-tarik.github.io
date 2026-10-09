@@ -76,7 +76,11 @@ a { color: inherit; }
   font-size: .7rem;
   line-height: 1.55;
   text-align: right;
-  transition: opacity .38s ease;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity .38s ease, transform .38s ease;
+  will-change: opacity, transform;
 }
 .model-context-note a {
   color: rgba(169,206,255,.72);
@@ -397,6 +401,7 @@ body.apsis-focus-active.apsis-focus-ready .apsis-focus-copy {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .trajectory-heading,
+  .model-context-note,
   .model-details,
   .model-meta,
   .parameter-panel { transition: none; }
