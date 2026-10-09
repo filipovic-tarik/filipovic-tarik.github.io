@@ -112,7 +112,7 @@ a { color: inherit; }
 h1 {
   margin: 0;
   font-family: "Manrope", sans-serif;
-  font-size: clamp(3.3rem, 7.5vw, 7.8rem);
+  font-size: clamp(3.2rem, 7vw, 7.3rem);
   line-height: .9;
   letter-spacing: -.065em;
   text-shadow: 0 2px 30px rgba(3,7,17,.9);
@@ -122,7 +122,7 @@ h1 {
   margin-left: .25em;
   color: rgba(255,255,255,.52);
   font-family: "Space Mono", monospace;
-  font-size: .16em;
+  font-size: .19em;
   font-weight: 400;
   letter-spacing: .06em;
   vertical-align: .55em;
@@ -382,7 +382,7 @@ body.apsis-focus-active.apsis-focus-ready .apsis-focus-copy {
   }
   .trajectory-content { width: min(100% - 30px, 620px); padding-top: 142px; }
   h1 { font-size: clamp(3.1rem, 15vw, 5.6rem); }
-  .scroll-prompt { display: block; margin: 16px 0 0; font-size: .18em; vertical-align: baseline; }
+  .scroll-prompt { display: block; margin: 16px 0 0; font-size: .21em; vertical-align: baseline; }
   .model-details { width: 100%; gap: 12px; margin-top: 40px; }
   .equation-panel { min-height: 130px; padding-inline: 12px; overflow-wrap: anywhere; }
   .equation-panel code { font-size: .62rem; }
