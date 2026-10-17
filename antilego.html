@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Antilego is a local prediction-market research application that finds probability inconsistencies across related Polymarket contracts."
+    />
+    <title>Antilego | Tarik Filipovic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;family=Manrope:wght@500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="antilego.css" />
+  </head>
+  <body>
+    <header class="project-header">
+      <a href="index.html#projects" aria-label="Back to selected work">← Selected work</a>
+      <span>ANTILEGO / CASE STUDY</span>
+      <a href="https://github.com/filipovic-tarik/Antilego" target="_blank" rel="noreferrer">GitHub ↗</a>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-mark">
+          <img src="assets/projects/antilego-logo-square.png" alt="Antilego logo" width="1254" height="1254" />
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow">Prediction-market consistency engine</p>
+          <h1 id="page-title">Find the prices that disagree</h1>
+          <p class="hero-intro">
+            Antilego is a local research application that discovers related
+            prediction-market contracts, identifies the mathematical rules
+            connecting them, and monitors executable prices for contradictions.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-light" href="#system">How it works <span>↓</span></a>
+            <a class="button" href="https://github.com/filipovic-tarik/Antilego" target="_blank" rel="noreferrer">View source <span>↗</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-section" aria-labelledby="dashboard-title">
+        <div class="section-heading">
+          <p class="section-label">01 / The application</p>
+          <h2 id="dashboard-title">Private by design. Live when needed.</h2>
+          <p>
+            The browser interface runs locally on a Mac. Discovery, approval,
+            monitoring, charts, and alerts remain in one workspace while account
+            credentials and research data stay on the machine.
+          </p>
+        </div>
+        <figure class="dashboard-frame">
+          <img
+            src="assets/projects/antilego-dashboard.png"
+            alt="Antilego dashboard showing live monitoring status and nine approved market families"
+            width="1600"
+            height="720"
+          />
+          <figcaption>Real Antilego dashboard during a local monitoring session</figcaption>
+        </figure>
+      </section>
+
+      <section class="problem-section" aria-labelledby="problem-title">
+        <p class="section-label">02 / The problem</p>
+        <div class="problem-grid">
+          <h2 id="problem-title">A market can look normal while related prices contradict one another.</h2>
+          <div>
+            <p>
+              A single contract price may appear reasonable in isolation. The
+              inconsistency becomes visible only when it is compared with contracts
+              that describe an earlier deadline, a harder threshold, an exhaustive
+              outcome set, or a logical implication.
+            </p>
+            <p>
+              Antilego treats those relationships as mathematical constraints and
+              tests the prices as a connected family rather than as unrelated bets.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="system-section" id="system" aria-labelledby="system-title">
+        <div class="section-heading section-heading-wide">
+          <p class="section-label">03 / The system</p>
+          <h2 id="system-title">From an open market to a reviewed signal</h2>
+        </div>
+        <ol class="workflow">
+          <li>
+            <span>01</span>
+            <h3>Discover</h3>
+            <p>Collect currently tradable Polymarket events and their contract metadata.</p>
+          </li>
+          <li>
+            <span>02</span>
+            <h3>Classify</h3>
+            <p>Use plan-backed reasoning to propose the probability law and logical ordering.</p>
+          </li>
+          <li>
+            <span>03</span>
+            <h3>Approve</h3>
+            <p>Present candidate market families for human review before monitoring begins.</p>
+          </li>
+          <li>
+            <span>04</span>
+            <h3>Verify</h3>
+            <p>Apply deterministic checks to executable order-book prices and surface violations.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="metrics" aria-label="Antilego operating parameters">
+        <article>
+          <strong>7</strong>
+          <span>Supported probability laws</span>
+        </article>
+        <article>
+          <strong>3 min</strong>
+          <span>Fixed price-snapshot cadence</span>
+        </article>
+        <article>
+          <strong>1 hr</strong>
+          <span>AI relationship-review cadence</span>
+        </article>
+        <article>
+          <strong>5 shares</strong>
+          <span>Default executable depth</span>
+        </article>
+      </section>
+
+      <section class="laws-section" aria-labelledby="laws-title">
+        <div class="section-heading">
+          <p class="section-label">04 / Probability laws</p>
+          <h2 id="laws-title">The model proposes relationships. Code checks the math.</h2>
+          <p>
+            AI is used to organize contracts and select a supported relationship.
+            Every actual consistency decision is then made by deterministic code.
+          </p>
+        </div>
+        <div class="laws-grid">
+          <article><span>01</span><h3>Deadline nesting</h3><p>An earlier cumulative deadline cannot be more likely than a later one.</p></article>
+          <article><span>02</span><h3>Survival deadlines</h3><p>Continuing through a later date cannot be more likely than continuing through an earlier one.</p></article>
+          <article><span>03</span><h3>Threshold chains</h3><p>A harder ordered threshold cannot be more likely than an easier threshold.</p></article>
+          <article><span>04</span><h3>Exhaustive outcomes</h3><p>Mutually exclusive outcomes that cover every result should total 100 percent.</p></article>
+          <article><span>05</span><h3>Complements</h3><p>A proposition and its exact opposite should total 100 percent.</p></article>
+          <article><span>06</span><h3>Non-exhaustive exclusivity</h3><p>Outcomes that cannot co-occur may not exceed 100 percent when combined.</p></article>
+          <article><span>07</span><h3>Logical implication</h3><p>If one event implies another, it cannot carry the higher probability.</p></article>
+        </div>
+      </section>
+
+      <section class="execution-section" aria-labelledby="execution-title">
+        <div class="execution-copy">
+          <p class="section-label">05 / Executable evidence</p>
+          <h2 id="execution-title">A theoretical discrepancy is not enough.</h2>
+          <p>
+            Antilego reads public order books and evaluates the prices available for
+            an executable share quantity. Empty or insufficient books are excluded
+            instead of being presented as opportunities.
+          </p>
+        </div>
+        <div class="execution-list">
+          <div><span>01</span><p>Depth-weighted bid and ask prices</p></div>
+          <div><span>02</span><p>Automatic removal of unexecutable families</p></div>
+          <div><span>03</span><p>Live charts with violation intervals</p></div>
+          <div><span>04</span><p>Local browser and desktop notifications</p></div>
+        </div>
+      </section>
+
+      <section class="closing-section" aria-labelledby="closing-title">
+        <p class="section-label">Experimental research application</p>
+        <h2 id="closing-title">A violation is a lead, not a guaranteed trade</h2>
+        <p>
+          Fees, liquidity, resolution rules, and changing order books still require
+          verification before any capital is placed. Antilego is designed to narrow
+          the search and make the reasoning inspectable.
+        </p>
+        <a class="button button-light" href="https://github.com/filipovic-tarik/Antilego" target="_blank" rel="noreferrer">Explore the source <span>↗</span></a>
+      </section>
+    </main>
+
+    <footer>
+      <span>ANTILEGO / TARIK FILIPOVIC</span>
+      <a href="index.html#projects">Back to portfolio ↑</a>
+    </footer>
+  </body>
+</html>
