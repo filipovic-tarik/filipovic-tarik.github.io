@@ -85,13 +85,6 @@ h1 {
   line-height: 1.75;
 }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.download-note {
-  margin: 18px 0 0;
-  color: var(--muted);
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
 .button {
   display: inline-flex;
   justify-content: space-between;
@@ -114,7 +107,6 @@ h1 {
 .button:not(.button-light):focus-visible { border-color: rgba(255, 255, 255, 0.5); }
 
 .dashboard-section,
-.download-section,
 .problem-section,
 .system-section,
 .laws-section,
@@ -123,21 +115,6 @@ h1 {
   padding: 120px 0;
   border-top: 1px solid var(--line);
 }
-.install-steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  margin: 0;
-  padding: 0;
-  border: 1px solid var(--line);
-  list-style: none;
-}
-.install-steps li { min-height: 230px; padding: 26px; border-right: 1px solid var(--line); }
-.install-steps li:last-child { border-right: 0; }
-.install-steps span { color: var(--muted); font-size: 0.65rem; letter-spacing: 0.13em; }
-.install-steps h3 { margin: 58px 0 14px; font-size: 1.25rem; font-weight: 600; }
-.install-steps p { margin: 0; color: var(--muted); line-height: 1.65; }
-.download-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
-.release-note { max-width: 700px; margin: 20px 0 0; color: var(--muted); font-size: 0.78rem; line-height: 1.65; }
 .section-heading {
   display: grid;
   grid-template-columns: 0.7fr 1.1fr 0.9fr;
@@ -271,7 +248,6 @@ footer a { text-decoration: none; }
   .hero-mark { width: min(65%, 280px); }
   h1 { font-size: clamp(3.7rem, 17vw, 5.2rem); }
   .dashboard-section,
-  .download-section,
   .problem-section,
   .system-section,
   .laws-section,
@@ -279,14 +255,11 @@ footer a { text-decoration: none; }
   .closing-section { padding: 82px 0; }
   .section-heading { margin-bottom: 42px; }
   .workflow,
-  .install-steps,
   .metrics,
   .laws-grid { grid-template-columns: 1fr; }
   .workflow li,
-  .install-steps li,
   .metrics article { border-right: 0; border-bottom: 1px solid var(--line); }
   .workflow li:last-child,
-  .install-steps li:last-child,
   .metrics article:last-child { border-bottom: 0; }
   .laws-grid article { min-height: 210px; }
   .dashboard-frame { width: calc(100% + 16px); margin-left: -8px; }
