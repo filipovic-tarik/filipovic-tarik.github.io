@@ -95,44 +95,58 @@
         <ol class="workflow">
           <li>
             <span>01</span>
-            <h3>Discover</h3>
-            <p>Collect currently tradable Polymarket events and their contract metadata.</p>
+            <div class="workflow-copy">
+              <h3>Discover</h3>
+              <p>
+                Antilego collects currently tradable Polymarket events, contract
+                metadata, and executable order-book prices. Before discovery begins,
+                the user can adjust how the monitoring run should operate.
+              </p>
+              <div class="settings-example" aria-label="Example monitoring configuration">
+                <p>Example configuration shown in the demonstration</p>
+                <ul>
+                  <li><strong>7</strong><span>probability laws enabled</span></li>
+                  <li><strong>3 min</strong><span>price-snapshot refresh rate</span></li>
+                  <li><strong>1 hr</strong><span>AI relationship-review rate</span></li>
+                  <li><strong>5 shares</strong><span>executable depth</span></li>
+                </ul>
+              </div>
+            </div>
           </li>
           <li>
             <span>02</span>
-            <h3>Classify</h3>
-            <p>Use AI to identify the probability relationship and the correct contract ordering.</p>
+            <div class="workflow-copy">
+              <h3>Classify</h3>
+              <p>
+                AI groups contracts that describe the same underlying event, identifies
+                the probability law connecting them, and determines their correct logical
+                order. This review runs at the interval selected by the user.
+              </p>
+            </div>
           </li>
           <li>
             <span>03</span>
-            <h3>Approve</h3>
-            <p>Present candidate market families for human review before monitoring begins.</p>
+            <div class="workflow-copy">
+              <h3>Approve</h3>
+              <p>
+                Candidate market families are presented with their proposed law and
+                contract membership. The user can inspect, select, and approve the
+                families that should enter monitoring.
+              </p>
+            </div>
           </li>
           <li>
             <span>04</span>
-            <h3>Verify</h3>
-            <p>Apply deterministic checks to executable order-book prices and surface violations.</p>
+            <div class="workflow-copy">
+              <h3>Verify</h3>
+              <p>
+                Deterministic code applies the approved law to executable prices at each
+                snapshot, updates the live charts, and surfaces a violation when the
+                observed prices break the expected relationship.
+              </p>
+            </div>
           </li>
         </ol>
-      </section>
-
-      <section class="metrics" aria-label="Antilego operating parameters">
-        <article>
-          <strong>7</strong>
-          <span>Supported probability laws</span>
-        </article>
-        <article>
-          <strong>3 min</strong>
-          <span>Fixed price-snapshot cadence</span>
-        </article>
-        <article>
-          <strong>1 hr</strong>
-          <span>AI relationship-review cadence</span>
-        </article>
-        <article>
-          <strong>5 shares</strong>
-          <span>Default executable depth</span>
-        </article>
       </section>
 
       <section class="laws-section" aria-labelledby="laws-title">
@@ -144,15 +158,15 @@
             Every actual consistency decision is then made by deterministic code.
           </p>
         </div>
-        <div class="laws-grid">
-          <article><span>01</span><h3>Deadline nesting</h3><p>An earlier cumulative deadline cannot be more likely than a later one.</p></article>
-          <article><span>02</span><h3>Survival deadlines</h3><p>Continuing through a later date cannot be more likely than continuing through an earlier one.</p></article>
-          <article><span>03</span><h3>Threshold chains</h3><p>A harder ordered threshold cannot be more likely than an easier threshold.</p></article>
-          <article><span>04</span><h3>Exhaustive outcomes</h3><p>Mutually exclusive outcomes that cover every result should total 100 percent.</p></article>
-          <article><span>05</span><h3>Complements</h3><p>A proposition and its exact opposite should total 100 percent.</p></article>
-          <article><span>06</span><h3>Non-exhaustive exclusivity</h3><p>Outcomes that cannot co-occur may not exceed 100 percent when combined.</p></article>
-          <article><span>07</span><h3>Logical implication</h3><p>If one event implies another, it cannot carry the higher probability.</p></article>
-        </div>
+        <ul class="laws-list">
+          <li><span>01</span><div><h3>Deadline nesting</h3><p>An earlier cumulative deadline cannot be more likely than a later one.</p></div></li>
+          <li><span>02</span><div><h3>Survival deadlines</h3><p>Continuing through a later date cannot be more likely than continuing through an earlier one.</p></div></li>
+          <li><span>03</span><div><h3>Threshold chains</h3><p>A harder ordered threshold cannot be more likely than an easier threshold.</p></div></li>
+          <li><span>04</span><div><h3>Exhaustive outcomes</h3><p>Mutually exclusive outcomes that cover every result should total 100 percent.</p></div></li>
+          <li><span>05</span><div><h3>Complements</h3><p>A proposition and its exact opposite should total 100 percent.</p></div></li>
+          <li><span>06</span><div><h3>Non-exhaustive exclusivity</h3><p>Outcomes that cannot co-occur may not exceed 100 percent when combined.</p></div></li>
+          <li><span>07</span><div><h3>Logical implication</h3><p>If one event implies another, it cannot carry the higher probability.</p></div></li>
+        </ul>
       </section>
 
       <section class="execution-section" aria-labelledby="execution-title">
