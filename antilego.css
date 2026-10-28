@@ -68,7 +68,7 @@ footer a:focus-visible { color: var(--white); }
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
-.section-label { font-size: 0.8rem; }
+.section-label { font-size: 1rem; }
 h1, h2, h3, p { margin-top: 0; }
 h1, h2, h3 { font-family: "Manrope", sans-serif; }
 h1 {
