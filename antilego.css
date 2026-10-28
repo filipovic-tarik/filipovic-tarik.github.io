@@ -5,6 +5,8 @@
   --muted: #9b9b97;
   --line: rgba(255, 255, 255, 0.16);
   --green: #50d78c;
+  --section-rail: 210px;
+  --section-gap: clamp(42px, 6vw, 90px);
 }
 
 * { box-sizing: border-box; }
@@ -117,16 +119,15 @@ h1 {
   padding: 120px 0;
   border-top: 1px solid var(--line);
 }
-.section-heading {
+.section-intro {
   display: grid;
-  grid-template-columns: 0.7fr 1.1fr 0.9fr;
-  gap: clamp(32px, 5vw, 72px);
+  grid-template-columns: var(--section-rail) minmax(0, 1fr);
+  gap: var(--section-gap);
   align-items: start;
   margin-bottom: 64px;
 }
-.section-heading h2,
-.problem-grid h2,
-.execution-copy h2,
+.section-content { max-width: 900px; }
+.section-content h2,
 .closing-section h2 {
   margin-bottom: 0;
   font-size: clamp(2.4rem, 4.5vw, 4.8rem);
@@ -134,18 +135,31 @@ h1 {
   letter-spacing: -0.055em;
   line-height: 1;
 }
-.section-heading > p:last-child,
-.problem-grid p,
-.execution-copy > p:last-child,
+.section-content > p,
 .closing-section > p:not(.section-label) {
   color: var(--muted);
   line-height: 1.75;
 }
+.section-content > p {
+  max-width: 680px;
+  margin: 28px 0 0;
+}
+.section-content > p + p { margin-top: 14px; }
+.section-detail {
+  width: calc(100% - var(--section-rail) - var(--section-gap));
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: calc(var(--section-rail) + var(--section-gap));
+}
 .dashboard-heading {
-  display: block;
+  margin-bottom: 64px;
 }
 .dashboard-heading h2 {
+  margin: 0;
   font-size: clamp(2.4rem, 4.2vw, 3.75rem);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 1;
 }
 @media (min-width: 901px) {
   .dashboard-heading h2 { white-space: nowrap; }
@@ -162,16 +176,8 @@ h1 {
   text-transform: uppercase;
 }
 
-.problem-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: clamp(50px, 9vw, 140px);
-}
-.problem-grid p:last-child { margin-bottom: 0; }
-.section-heading-wide { grid-template-columns: 0.7fr 2fr; }
 .workflow {
   display: block;
-  margin: 0;
   padding: 0;
   border-top: 1px solid var(--line);
   list-style: none;
@@ -218,7 +224,7 @@ h1 {
 .settings-example strong { min-width: 62px; color: var(--white); font: 600 0.82rem/1.5 "Manrope", sans-serif; }
 .settings-example li span { color: var(--muted); font-size: 0.8rem; letter-spacing: 0; line-height: 1.5; }
 
-.laws-list { max-width: 920px; margin: 0; padding: 0; border-top: 1px solid var(--line); list-style: none; }
+.laws-list { padding: 0; border-top: 1px solid var(--line); list-style: none; }
 .laws-list li {
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr);
@@ -229,10 +235,8 @@ h1 {
 .laws-list h3 { margin: 0 0 5px; font-size: 1rem; font-weight: 600; }
 .laws-list p { max-width: 680px; }
 
-.execution-section { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(60px, 10vw, 150px); }
-.execution-copy h2 { margin-bottom: 28px; }
 .execution-list { border-top: 1px solid var(--line); }
-.execution-list div { display: grid; grid-template-columns: 44px 1fr; gap: 14px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.execution-list div { display: grid; grid-template-columns: 72px 1fr; gap: 24px; padding: 21px 0; border-bottom: 1px solid var(--line); }
 .execution-list p { margin: 0; font-size: 0.95rem; }
 
 .closing-section { text-align: center; }
@@ -254,10 +258,8 @@ footer a { text-decoration: none; }
 
 @media (max-width: 900px) {
   .hero { grid-template-columns: 0.7fr 1.3fr; gap: 42px; }
-  .section-heading { grid-template-columns: 1fr; gap: 18px; }
-  .section-heading > p:last-child { max-width: 620px; }
-  .problem-grid,
-  .execution-section { grid-template-columns: 1fr; gap: 40px; }
+  .section-intro { grid-template-columns: 1fr; gap: 18px; }
+  .section-detail { width: 100%; margin-left: 0; }
   .workflow-copy { grid-template-columns: minmax(150px, 0.45fr) minmax(260px, 1fr); gap: 32px; }
 }
 
@@ -276,12 +278,14 @@ footer a { text-decoration: none; }
   .laws-section,
   .execution-section,
   .closing-section { padding: 82px 0; }
-  .section-heading { margin-bottom: 42px; }
+  .section-intro,
+  .dashboard-heading { margin-bottom: 42px; }
   .workflow li { grid-template-columns: 44px minmax(0, 1fr); gap: 16px; padding: 26px 0; }
   .workflow-copy { grid-template-columns: 1fr; gap: 14px; }
   .settings-example { grid-column: 1; }
   .settings-example ul { grid-template-columns: 1fr; gap: 9px; }
   .laws-list li { grid-template-columns: 42px minmax(0, 1fr); gap: 14px; }
+  .execution-list div { grid-template-columns: 42px minmax(0, 1fr); gap: 14px; }
   .dashboard-frame { width: calc(100% + 16px); margin-left: -8px; }
   footer { gap: 24px; }
 }
