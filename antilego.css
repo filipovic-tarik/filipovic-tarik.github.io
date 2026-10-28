@@ -243,6 +243,7 @@ h1 {
 .closing-section h2 { max-width: 850px; margin-inline: auto; }
 .closing-section > p:not(.section-label) { max-width: 670px; margin: 30px auto 36px; }
 .closing-section .button { min-width: 220px; }
+.closing-actions { justify-content: center; }
 
 footer {
   display: flex;
