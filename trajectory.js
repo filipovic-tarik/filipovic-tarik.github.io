@@ -310,17 +310,49 @@ function drawBody(point, radius, fill, glow) {
   context.restore();
 }
 
-function drawSagittariusTrail(point, scale) {
-  const trailLength = scale * 0.22;
-  const trailEndY = point.y + trailLength;
-  const trailGradient = context.createLinearGradient(point.x, point.y, point.x, trailEndY);
+function drawSagittariusTrail(
+  point,
+  scale,
+  viewRotation,
+  planeCompression,
+  verticalProjection,
+) {
+  // Treat the contrail as the negative z-axis of the galactic scene instead of
+  // a line fixed to the screen. It points down in the default angled view and
+  // foreshortens into Sagittarius A* when the camera moves overhead.
+  const trailAxisLength = scale * 0.22 / 0.78;
+  const projectedOrigin = projectVector(
+    0,
+    0,
+    0,
+    viewRotation,
+    planeCompression,
+    verticalProjection,
+  );
+  const projectedEnd = projectVector(
+    0,
+    0,
+    -trailAxisLength,
+    viewRotation,
+    planeCompression,
+    verticalProjection,
+  );
+  const trailEnd = {
+    x: point.x + projectedEnd.x - projectedOrigin.x,
+    y: point.y + projectedEnd.y - projectedOrigin.y,
+  };
+  const projectedLength = Math.hypot(trailEnd.x - point.x, trailEnd.y - point.y);
+
+  if (projectedLength < 0.5) return;
+
+  const trailGradient = context.createLinearGradient(point.x, point.y, trailEnd.x, trailEnd.y);
   trailGradient.addColorStop(0, 'rgba(239, 72, 72, 0.38)');
   trailGradient.addColorStop(1, 'rgba(239, 72, 72, 0)');
 
   context.save();
   context.beginPath();
   context.moveTo(point.x, point.y);
-  context.lineTo(point.x, trailEndY);
+  context.lineTo(trailEnd.x, trailEnd.y);
   context.lineWidth = Math.max(0.4, scale / 2200);
   context.strokeStyle = trailGradient;
   context.stroke();
@@ -829,7 +861,13 @@ function render(time) {
     planeCompression,
     verticalProjection,
   );
-  drawSagittariusTrail(galacticCenter, scale);
+  drawSagittariusTrail(
+    galacticCenter,
+    scale,
+    viewRotation,
+    planeCompression,
+    verticalProjection,
+  );
   drawSagittariusA(galacticCenter, scale, time);
   drawLabel(galacticCenter, 'Sagittarius A*', 42, -34);
 
