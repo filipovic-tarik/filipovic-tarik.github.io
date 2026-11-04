@@ -112,7 +112,7 @@ nav a:focus-visible {
   position: absolute;
   z-index: 0;
   right: -18px;
-  bottom: -44px;
+  bottom: -48px;
   left: 37%;
   height: 26px;
   border-right: 2px solid var(--accent);
